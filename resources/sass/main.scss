@@ -1,0 +1,13 @@
+// 1. Global tag settings
+
+html, body {
+  height: 100%;
+}
+
+
+// 2. Images and backgrounds
+.bg--image {
+  object-fit: cover;
+  height: 100%;
+  max-width: 100%;
+}

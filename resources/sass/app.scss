@@ -5,4 +5,10 @@
 @import 'variables';
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// @import '~bootstrap/scss/bootstrap';
+
+// Normalize css
+@import '~normalize.css/normalize.css';
+
+// Main
+@import "main";
