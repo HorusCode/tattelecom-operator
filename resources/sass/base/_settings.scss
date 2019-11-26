@@ -1,1 +1,18 @@
 // 1. Image settings
+// 2. Box settings
+@mixin box-shadow($color: black) {
+  box-shadow: 0 2px 5px 0 transparentize($color, .5);
+}
+.box-shadow {
+  @include box-shadow;
+}
+// 3. Text settings
+.text-muted {
+  color: $muted;
+}
+.text-danger {
+  color: $red;
+}
+.text-primary {
+  color: $primary;
+}
