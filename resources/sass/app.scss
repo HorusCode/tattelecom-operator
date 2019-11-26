@@ -1,14 +1,22 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
-// Variables
-@import 'variables';
-
-// Bootstrap
-// @import '~bootstrap/scss/bootstrap';
-
 // Normalize css
 @import '~normalize.css/normalize.css';
 
-// Main
-@import "main";
+/* Utils */
+@import 'utils/grid';
+@import 'utils/flex';
+
+/* Base */
+@import 'base/variables';
+@import 'base/settings';
+@import 'base/core';
+
+/* Components */
+@import 'components/input';
+@import 'components/form';
+@import 'components/button';
+
+
+
