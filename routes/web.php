@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('login-form');
+Route::post('/login', 'Auth\LoginController@login')->name('login');
 
 Route::get('/home', 'HomeController@index')->name('home');
