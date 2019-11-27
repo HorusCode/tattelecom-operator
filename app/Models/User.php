@@ -35,4 +35,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    // With employee class relationship one-to-many
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+
 }
