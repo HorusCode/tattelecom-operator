@@ -13,7 +13,8 @@ html, body {
 
 body {
   background-color: $body-bg;
-  font-family: 'Ubuntu', sans-serif;
+  font-size: $font-size-base;
+  font-family: $font-family-sans-serif;
 }
 
 img {
@@ -21,10 +22,99 @@ img {
   height: auto;
 }
 
+ul {
+  list-style: none;
+}
+
+a {
+  color: $secondary;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+
 // 2. Login page
 .col-bg, .col-form {
   height: 100%;
 }
 
+// 3. Sidebar menu
+
+// 3.1 Sidebar box
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 30px;
+  left: 20px;
+  width: 280px;
+  height: calc(100% - 60px);
+  flex: 0 0 280px;
+  background-color: #fff;
+  overflow: hidden;
+  @extend .box;
+}
+
+//3.2 Sidebar header
+.sidebar__header {
+  width: 100%;
+  padding: 1rem;
+  background-color: #00000003;
+  border-bottom: 1px solid $border-color;
+}
+
+.burger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 45px;
+  width: 45px;
+  padding: 8px;
+  & > span {
+    display: block;
+    height: 4px;
+    width: 100%;
+    background-color: $grey;
+    border-radius: 5px;
+  }
+}
+
+// 3.3 Sidebar content
+.sidebar__content {
+  padding: 0 1.5rem 1.5rem;
+}
+
+
+// 4 Content block
+.content {
+  @extend .grid-main;
+  &__header {
+    grid-area: h;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+    height: 5rem;
+    width: 100%;
+    padding: 0 30px;
+  }
+}
+
+// 4.1 Content header elements
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.user-name {
+  margin-right: 20px;
+  .user-employee{
+    padding: 3px 0 0;
+    font-size: .9rem;
+    opacity: .6;
+    font-weight: 300;
+    display: block;
+  }
+}
 
 

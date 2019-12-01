@@ -21,7 +21,7 @@
 </head>
 <body>
 <div id="app" >
-    @yield('header')
+    @includeWhen(Route::currentRouteName() != 'login-form', 'includes.sidebar')
 
     <main>
         @yield('content')

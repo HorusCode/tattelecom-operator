@@ -33,10 +33,6 @@
   }
   .input-group {
     position: relative;
-    &>.mdi {
-      position: absolute;
-      font-size: 1.4em;
-    }
   }
 }
 
@@ -47,13 +43,3 @@
   @extend .text-primary
 }
 
-.icon-left {
-  top: 50%;
-  left: 1em;
-  transform: translateY(-50%);
-}
-.icon-right {
-  top: 50%;
-  right: 1em;
-  transform: translateY(-50%);
-}
