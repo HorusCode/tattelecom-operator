@@ -87,7 +87,8 @@ a {
 
 
 // 4 Content block
-.content {
+
+.app-container {
   @extend .grid-main;
   &__header {
     grid-area: h;
@@ -97,8 +98,15 @@ a {
     z-index: 10;
     height: 5rem;
     width: 100%;
-    padding: 0 30px;
   }
+  &__content {
+    grid-area: c;
+  }
+}
+
+.app-container__content,
+.app-container__header {
+  padding: $content-padding;
 }
 
 // 4.1 Content header elements

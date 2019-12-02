@@ -10,4 +10,5 @@
   grid-template-areas: ". h h h"
                        ". c c c"
                        ". f f f";
+  grid-template-columns: 300px repeat(3, 1fr);
 }

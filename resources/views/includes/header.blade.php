@@ -1,4 +1,4 @@
-<header class="content__header">
+<header class="app-container__header">
     <span class="page-title">
         Новые заявления
     </span>
@@ -9,8 +9,8 @@
                 Оператор
             </span>
         </div>
-        <div class="avatar">
+        <span class="avatar">
             <span class="mdi mdi-account-circle-outline"></span>
-        </div>
+        </span>
     </div>
 </header>
