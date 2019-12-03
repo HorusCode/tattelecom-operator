@@ -23,8 +23,8 @@ class CreateUsersTable extends Migration
             $table->integer('passport_series');
             $table->string('login')->unique();
             $table->string('password');
-            $table->bigInteger('id_employee')->index()->nullable()->unsigned();
-            $table->foreign('id_employee')->references('id')
+            $table->bigInteger('employee_id')->index()->nullable()->unsigned();
+            $table->foreign('employee_id')->references('id')
                 ->on('employees')->onUpdate('cascade')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();

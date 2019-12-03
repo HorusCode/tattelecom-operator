@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'operator',
-                'id_employee' => 2,
+                'employee_id' => 2,
                 'password' => Hash::make('1234')
             ],
             [
@@ -33,7 +33,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'service',
-                'id_employee' => 3,
+                'employee_id' => 3,
                 'password' => Hash::make('1234')
             ],
             [
@@ -44,7 +44,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'call',
-                'id_employee' => 1,
+                'employee_id' => 1,
                 'password' => Hash::make('1234')
             ]
         ];

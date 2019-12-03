@@ -9,7 +9,7 @@
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child notification is-primary">
                             <div class="content">
-                                ыываыва
+                                <new-statement-table></new-statement-table>
                             </div>
                         </article>
                         <article class="tile is-child notification is-warning">
