@@ -7,9 +7,9 @@
             <div class="tile is-vertical is-8">
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
-                        <article class="tile is-child notification is-primary">
+                        <article class="tile is-child">
                             <div class="content">
-                                <new-statement-table></new-statement-table>
+                                <new-statement-table data="{{ $data }}"></new-statement-table>
                             </div>
                         </article>
                         <article class="tile is-child notification is-warning">

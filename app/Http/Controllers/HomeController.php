@@ -2,28 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Statement;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+    protected $statement;
+
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param Statement $statement
      */
-    public function __construct()
+    public function __construct(Statement $statement)
     {
+        $this->statement = $statement;
         $this->middleware('auth');
     }
 
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
-
-        return view('pages.home');
+        $data = $this->statement->status(true)->get()->toJson();
+        return view('pages.home')->with('data', $data);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
 class WorksTableSeeder extends Seeder
 {
@@ -18,7 +19,9 @@ class WorksTableSeeder extends Seeder
                 'operator_user_id' => 1,
                 'service_user_id' => 2,
                 'statement_id' => $i,
-                'status' => rand(0, 3)
+                'status' => rand(0, 3),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ];
         }
         DB::table('works')->insert($data);

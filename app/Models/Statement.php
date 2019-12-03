@@ -23,4 +23,10 @@ class Statement extends Model
         return $this->belongsTo(User::class);
     }
 
+
+    public function scopeStatus($query, bool $status)
+    {
+        return $query->where('status', $status);
+    }
+
 }

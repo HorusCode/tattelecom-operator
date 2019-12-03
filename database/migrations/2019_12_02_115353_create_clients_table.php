@@ -23,6 +23,7 @@ class CreateClientsTable extends Migration
             $table->integer('passport_series');
             $table->string('net_login');
             $table->string('address');
+            $table->boolean('private_face');
             $table->timestamps();
         });
     }

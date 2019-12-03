@@ -22,7 +22,8 @@ class ClientsTableSeeder extends Seeder
                 'passport_number' => $faker->randomNumber('6'),
                 'passport_series' => $faker->randomNumber('4'),
                 'net_login' => Str::random('5'),
-                'address' => $faker->address
+                'address' => $faker->address,
+                'private_face' => rand(0,1)
             ];
         }
         DB::table('clients')->insert($data);
