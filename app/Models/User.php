@@ -38,8 +38,22 @@ class User extends Authenticatable
     // With employee class relationship one-to-many
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this->belongsTo(Employee::class);
     }
 
+    public function statements()
+    {
+        return $this->hasMany(Statement::class);
+    }
+
+    public function workOperator()
+    {
+        return $this->hasMany(Work::class, 'operator_user_id');
+    }
+
+    public function workService()
+    {
+        return $this->hasMany(Work::class, 'service_user_id');
+    }
 
 }

@@ -13,7 +13,7 @@ class Employee extends Model
     // With user class relationship one-to-many
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class);
     }
 
 
