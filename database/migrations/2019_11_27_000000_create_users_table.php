@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('employee_id')->index()->nullable()->unsigned();
             $table->foreign('employee_id')->references('id')
                 ->on('employees')->onUpdate('cascade')->onDelete('cascade');
-            $table->rememberToken();
+            $table->string('api_token', 60)->nullable();
             $table->timestamps();
         });
     }

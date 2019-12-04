@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'passport_number',
         'passport_series',
         'password',
+        'api_token'
     ];
 
     /**
@@ -56,6 +58,11 @@ class User extends Authenticatable
         return $this->hasMany(Work::class, 'service_user_id');
     }
 
-
+    public function setApiToken()
+    {
+        $this->api_token = Str::random(60);
+        $this->save();
+        return $this->api_token;
+    }
 
 }

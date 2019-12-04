@@ -1996,6 +1996,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
@@ -2018,7 +2019,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addRow: function addRow() {
       this.rows.push({
-        value: ""
+        value: null
       });
     },
     removeRow: function removeRow(index) {
@@ -2028,7 +2029,7 @@ __webpack_require__.r(__webpack_exports__);
     getAsyncData: Object(lodash__WEBPACK_IMPORTED_MODULE_0__["debounce"])(function (text) {
       var _this = this;
 
-      if (!text.length) {
+      if (text.length < 3) {
         this.serviceUsers = [];
         return;
       }
@@ -2058,20 +2059,16 @@ __webpack_require__.r(__webpack_exports__);
       return Array.from(new Set(arr));
     },
     sendData: function sendData() {
-      var _this2 = this;
-
-      axios.post("/api/users/service").then(function (_ref2) {
-        var data = _ref2.data;
-        _this2.serviceUsers = [];
-        data.forEach(function (res) {
-          return _this2.serviceUsers.push(res);
-        });
-      })["catch"](function (error) {
-        _this2.serviceUsers = [];
-        throw error;
-      })["finally"](function () {
-        _this2.isFetching = false;
+      axios.post("/api/works", {
+        ids: this.userServiceIds(),
+        statement: this.currentStatement
       });
+    },
+    userServiceIds: function userServiceIds() {
+      var ids = this.rows.map(function (obj) {
+        return obj.value;
+      });
+      return this.unique(ids);
     }
   },
   computed: {
@@ -2082,6 +2079,9 @@ __webpack_require__.r(__webpack_exports__);
         status = true;
       }
 
+      this.rows.forEach(function (obj) {
+        if (obj.value === null) status = true;
+      });
       return status;
     }
   }
@@ -46478,7 +46478,7 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
  */
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

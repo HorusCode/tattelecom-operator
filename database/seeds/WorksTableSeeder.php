@@ -19,7 +19,7 @@ class WorksTableSeeder extends Seeder
                 'operator_user_id' => 1,
                 'service_user_id' => 2,
                 'statement_id' => $i,
-                'status' => rand(0, 3),
+                'status' => rand(0, 1),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];

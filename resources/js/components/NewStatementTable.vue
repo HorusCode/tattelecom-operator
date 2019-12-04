@@ -40,7 +40,8 @@
                     </span>
                 </b-table-column>
                 <b-table-column class="is-middle" label="Действия" sortable centered>
-                    <b-button type="is-info" icon-right="pen" @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
+                    <b-button type="is-info" icon-right="pen"
+                              @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
                 </b-table-column>
             </template>
             <template slot="detail" slot-scope="props">
@@ -145,7 +146,7 @@
         methods: {
             addRow: function () {
                 this.rows.push({
-                    value: ""
+                    value: null
                 });
             },
             removeRow: function (index) {
@@ -153,7 +154,7 @@
                 this.rows.splice(index, 1);
             },
             getAsyncData: debounce(function (text) {
-                if (!text.length) {
+                if (text.length < 3) {
                     this.serviceUsers = [];
                     return;
                 }
@@ -182,18 +183,16 @@
                 return Array.from(new Set(arr));
             },
             sendData: function () {
-                axios.post(`/api/users/service`)
-                    .then(({data}) => {
-                        this.serviceUsers = [];
-                        data.forEach((res) => this.serviceUsers.push(res))
-                    })
-                    .catch((error) => {
-                        this.serviceUsers = [];
-                        throw error;
-                    })
-                    .finally(() => {
-                        this.isFetching = false
-                    })
+                axios.post(`/api/works`, {
+                    ids: this.userServiceIds(),
+                    statement: this.currentStatement
+                });
+            },
+            userServiceIds: function () {
+                let ids = this.rows.map(obj => {
+                    return obj.value;
+                });
+                return this.unique(ids);
             }
 
         },
@@ -203,6 +202,9 @@
                 if (this.rows.length === 0 || this.selectedUsers.length === 0) {
                     status = true;
                 }
+                this.rows.forEach(obj => {
+                    if(obj.value === null) status = true;
+                });
                 return status;
             }
         }
