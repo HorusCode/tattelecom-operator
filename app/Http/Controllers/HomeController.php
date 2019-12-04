@@ -29,7 +29,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = $this->statement->status(true)->get()->toJson();
+        $data = $this->statement->status(true)->with('client')->get()->toJson();
         return view('pages.home')->with('data', $data);
     }
 }

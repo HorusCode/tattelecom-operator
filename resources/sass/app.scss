@@ -5,8 +5,7 @@
 /* Base settings */
 @import 'base/variables';
 @import 'base/settings';
-// Normalize css
-@import '~normalize.css/normalize.css';
+
 
 /* Utils */
 @import 'utils/grid';
@@ -21,5 +20,5 @@
 @import 'components/button';
 @import 'components/list';
 
-
+@import "~buefy/dist/buefy.css";
 
