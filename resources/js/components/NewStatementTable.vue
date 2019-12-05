@@ -1,7 +1,18 @@
 <template>
     <section>
+        <b-field position="is-right">
+            <b-input placeholder="Search..."
+                     type="search"
+                     icon="magnify"
+                     v-model="searchWord"
+                     >
+            </b-input>
+            <p class="control">
+                <button class="button is-primary">Search</button>
+            </p>
+        </b-field>
         <b-table
-                :data="json"
+                :data="filtered"
                 paginated
                 per-page="15"
                 detailed
@@ -23,13 +34,13 @@
                     {{ props.row.id }}
                 </b-table-column>
 
-                <b-table-column class="is-middle" field="problem" label="Адрес" sortable width="200">
-                    {{ props.row.client.address }}
+                <b-table-column class="is-middle" field="client_address" label="Адрес" sortable width="200">
+                    {{ props.row.client_address }}
                 </b-table-column>
 
-                <b-table-column class="is-middle" field="client.private_face" label="Юр. лицо" sortable centered>
-                    <span class="tag" :class="props.row.client.private_face ? 'is-primary' : 'is-warning'">
-                        {{  props.row.client.private_face ? 'Да' : 'Нет'}}
+                <b-table-column class="is-middle" field="client_private_face" label="Юр. лицо" sortable centered>
+                    <span class="tag" :class="props.row.client_private_face ? 'is-primary' : 'is-warning'">
+                        {{  props.row.client_private_face ? 'Да' : 'Нет'}}
                     </span>
 
                 </b-table-column>
@@ -54,9 +65,9 @@
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                <strong>{{ props.row.client.lastname }} {{ props.row.client.firstname }} {{
-                                    props.row.client.patronymic }}</strong>
-                                <small>Логин: {{ props.row.client.net_login }}</small>
+                                <strong>{{ props.row.client_lastname }} {{ props.row.client_firstname }} {{
+                                    props.row.client_patronymic }}</strong>
+                                <small>Логин: {{ props.row.client_net_login }}</small>
                                 <br>
                                 {{ props.row.problem }}
                             </p>
@@ -135,6 +146,7 @@
                 sortIconSize: 'is-small',
                 isAddServiceManagerModal: false,
                 isFetching: false,
+                searchWord: '',
                 selectedUsers: [],
                 serviceUsers: [],
                 currentStatement: null,
@@ -186,6 +198,23 @@
                 axios.post(`/api/works`, {
                     ids: this.userServiceIds(),
                     statement: this.currentStatement
+                }).then(({data}) => {
+                    this.$buefy.toast.open({
+                        message: data ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
+                        type: data ? 'is-success' : 'is-danger'
+                    });
+                    this.json = _.filter(this.json, item => {
+                        return item.id !== this.currentStatement;
+                    });
+                    _.delay(() => {
+                        this.isAddServiceManagerModal = false;
+                        this.selectedUsers = [];
+                        this.serviceUsers = [];
+                        this.currentStatement = null;
+                        this.rows = [{
+                            value: null
+                        }];
+                    }, 300, 'later');
                 });
             },
             userServiceIds: function () {
@@ -194,7 +223,6 @@
                 });
                 return this.unique(ids);
             }
-
         },
         computed: {
             createWorkBtn: function () {
@@ -203,9 +231,22 @@
                     status = true;
                 }
                 this.rows.forEach(obj => {
-                    if(obj.value === null) status = true;
+                    if (obj.value === null) status = true;
                 });
                 return status;
+            },
+            filtered: function () {
+                let search = this.searchWord && this.searchWord.toLowerCase();
+                let data = this.json;
+                if(search) {
+                    data = data.filter(row => {
+                        return Object.keys(row).some(key => {
+                            return String(row[key]).toLowerCase().indexOf(search) > -1
+                        })
+                    })
+                }
+                console.log(data);
+                return data;
             }
         }
     }

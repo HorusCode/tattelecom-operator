@@ -10,6 +10,7 @@ class Statement extends Model
         'client_id',
         'user_id',
         'problem',
+        'status'
     ];
 
 
@@ -23,10 +24,5 @@ class Statement extends Model
         return $this->belongsTo(User::class);
     }
 
-
-    public function scopeStatus($query, bool $status)
-    {
-        return $query->where('status', $status);
-    }
 
 }

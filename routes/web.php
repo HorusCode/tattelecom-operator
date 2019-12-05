@@ -15,7 +15,8 @@ Route::get('/', 'Auth\LoginController@showLoginForm')->name('login-form');
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::middleware('auth')->group(function () {
-    Route::get('/token', 'UserController@getToken');
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/active', 'HomeController@index')->name('home');
+    Route::get('/end', 'HomeController@index')->name('home');
 });
 

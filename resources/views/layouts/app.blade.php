@@ -11,7 +11,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/getToken.js') }}" defer></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -20,12 +19,16 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-<div id="app" >
+<div id="app">
     @includeWhen(Route::currentRouteName() != 'login-form', 'includes.sidebar')
     <main>
         @yield('content')
     </main>
 </div>
-
+@if(Route::currentRouteName() == 'home')
+<script type="text/javascript">
+    localStorage.setItem('token', '{{ Auth::user()->api_token }}');
+</script>
+@endif
 </body>
 </html>

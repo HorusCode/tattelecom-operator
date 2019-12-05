@@ -1997,6 +1997,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
@@ -2008,6 +2019,7 @@ __webpack_require__.r(__webpack_exports__);
       sortIconSize: 'is-small',
       isAddServiceManagerModal: false,
       isFetching: false,
+      searchWord: '',
       selectedUsers: [],
       serviceUsers: [],
       currentStatement: null,
@@ -2059,9 +2071,32 @@ __webpack_require__.r(__webpack_exports__);
       return Array.from(new Set(arr));
     },
     sendData: function sendData() {
+      var _this2 = this;
+
       axios.post("/api/works", {
         ids: this.userServiceIds(),
         statement: this.currentStatement
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this2.$buefy.toast.open({
+          message: data ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
+          type: data ? 'is-success' : 'is-danger'
+        });
+
+        _this2.json = _.filter(_this2.json, function (item) {
+          return item.id !== _this2.currentStatement;
+        });
+
+        _.delay(function () {
+          _this2.isAddServiceManagerModal = false;
+          _this2.selectedUsers = [];
+          _this2.serviceUsers = [];
+          _this2.currentStatement = null;
+          _this2.rows = [{
+            value: null
+          }];
+        }, 300, 'later');
       });
     },
     userServiceIds: function userServiceIds() {
@@ -2083,6 +2118,21 @@ __webpack_require__.r(__webpack_exports__);
         if (obj.value === null) status = true;
       });
       return status;
+    },
+    filtered: function filtered() {
+      var search = this.searchWord && this.searchWord.toLowerCase();
+      var data = this.json;
+
+      if (search) {
+        data = data.filter(function (row) {
+          return Object.keys(row).some(function (key) {
+            return String(row[key]).toLowerCase().indexOf(search) > -1;
+          });
+        });
+      }
+
+      console.log(data);
+      return data;
     }
   }
 });
@@ -33868,9 +33918,37 @@ var render = function() {
   return _c(
     "section",
     [
+      _c(
+        "b-field",
+        { attrs: { position: "is-right" } },
+        [
+          _c("b-input", {
+            attrs: {
+              placeholder: "Search...",
+              type: "search",
+              icon: "magnify"
+            },
+            model: {
+              value: _vm.searchWord,
+              callback: function($$v) {
+                _vm.searchWord = $$v
+              },
+              expression: "searchWord"
+            }
+          }),
+          _vm._v(" "),
+          _c("p", { staticClass: "control" }, [
+            _c("button", { staticClass: "button is-primary" }, [
+              _vm._v("Search")
+            ])
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
       _c("b-table", {
         attrs: {
-          data: _vm.json,
+          data: _vm.filtered,
           paginated: "",
           "per-page": "15",
           detailed: "",
@@ -33917,7 +33995,7 @@ var render = function() {
                   {
                     staticClass: "is-middle",
                     attrs: {
-                      field: "problem",
+                      field: "client_address",
                       label: "Адрес",
                       sortable: "",
                       width: "200"
@@ -33926,7 +34004,7 @@ var render = function() {
                   [
                     _vm._v(
                       "\n                " +
-                        _vm._s(props.row.client.address) +
+                        _vm._s(props.row.client_address) +
                         "\n            "
                     )
                   ]
@@ -33937,7 +34015,7 @@ var render = function() {
                   {
                     staticClass: "is-middle",
                     attrs: {
-                      field: "client.private_face",
+                      field: "client_private_face",
                       label: "Юр. лицо",
                       sortable: "",
                       centered: ""
@@ -33948,7 +34026,7 @@ var render = function() {
                       "span",
                       {
                         staticClass: "tag",
-                        class: props.row.client.private_face
+                        class: props.row.client_private_face
                           ? "is-primary"
                           : "is-warning"
                       },
@@ -33956,7 +34034,7 @@ var render = function() {
                         _vm._v(
                           "\n                    " +
                             _vm._s(
-                              props.row.client.private_face ? "Да" : "Нет"
+                              props.row.client_private_face ? "Да" : "Нет"
                             ) +
                             "\n                "
                         )
@@ -34029,16 +34107,16 @@ var render = function() {
                       _c("p", [
                         _c("strong", [
                           _vm._v(
-                            _vm._s(props.row.client.lastname) +
+                            _vm._s(props.row.client_lastname) +
                               " " +
-                              _vm._s(props.row.client.firstname) +
+                              _vm._s(props.row.client_firstname) +
                               " " +
-                              _vm._s(props.row.client.patronymic)
+                              _vm._s(props.row.client_patronymic)
                           )
                         ]),
                         _vm._v(" "),
                         _c("small", [
-                          _vm._v("Логин: " + _vm._s(props.row.client.net_login))
+                          _vm._v("Логин: " + _vm._s(props.row.client_net_login))
                         ]),
                         _vm._v(" "),
                         _c("br"),
@@ -46479,6 +46557,10 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+if (localStorage.key('token')) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+}
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
