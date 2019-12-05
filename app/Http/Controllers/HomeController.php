@@ -7,7 +7,6 @@ use App\Models\Work;
 use App\Services\HomeServices;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 class HomeController extends Controller
 {
@@ -45,10 +44,41 @@ class HomeController extends Controller
         return view('pages.home')->with('data', json_encode($arr));
     }
 
-    public function active()
+    public function active() //TODO: Create Resource class
     {
-
-        dd($statements);
-        return view('pages.active')->with('data', json_encode($data));
+        $data = $this->work
+            ->whereStatus('false')
+            ->get()
+            ->groupBy('statement_id')
+            ;
+        $arr = [];
+        $arrKey = 0;
+        foreach ($data as $i => $datum) {
+            $stmt = $this->statement->find($i);
+            $client = $stmt->client;
+            $service = [];
+            $date = '';
+            foreach ($datum as $j => $value) {
+                $service[] = $value->serviceUser->toArray();
+                $date = $value->created_at;
+            }
+            $arr[$arrKey] = [
+                'id' => $i,
+                'problem' => $stmt->problem,
+                'client' => [
+                    'id' => $client['id'],
+                    'firstname' => $client['firstname'],
+                    'lastname' => $client['lastname'],
+                    'patronymic' => $client['patronymic'],
+                    'address' => $client['address'],
+                    'private_face' => $client['private_face'],
+                    'net_login' => $client['net_login'],
+                ],
+                'service' => $service,
+                'created_at' => $date
+            ];
+            $arrKey++;
+        }
+        return view('pages.active')->with('data', json_encode($arr));
     }
 }

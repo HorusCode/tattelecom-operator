@@ -7,6 +7,9 @@ window._ = require('lodash');
  */
 
 window.axios = require('axios');
+window.moment = require('moment');
+moment.locale('ru');
+
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

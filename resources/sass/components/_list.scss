@@ -56,4 +56,8 @@
       color: $primary;
     }
   }
+  &_item.--active {
+    background-color: $primary;
+    color: #fff;
+  }
 }

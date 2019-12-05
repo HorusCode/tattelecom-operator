@@ -1,15 +1,12 @@
 <template>
     <section>
         <b-field position="is-right">
-            <b-input placeholder="Search..."
+            <b-input placeholder="Поиск..."
                      type="search"
                      icon="magnify"
                      v-model="searchWord"
             >
             </b-input>
-            <p class="control">
-                <button class="button is-primary">Search</button>
-            </p>
         </b-field>
         <b-table
                 :data="filtered"
@@ -31,23 +28,23 @@
 
             <template slot-scope="props">
                 <b-table-column class="is-middle" field="id" label="#" width="40" sortable numeric>
-                    {{ props.row.stmt_id }}
+                    {{ props.row.id }}
                 </b-table-column>
 
                 <b-table-column class="is-middle" field="client_address" label="Адрес" sortable width="200">
-                    {{ props.row.client_address }}
+                    {{ props.row.client.address }}
                 </b-table-column>
 
                 <b-table-column class="is-middle" field="client_private_face" label="Юр. лицо" sortable centered>
-                    <span class="tag" :class="props.row.client_private_face ? 'is-primary' : 'is-warning'">
-                        {{  props.row.client_private_face ? 'Да' : 'Нет'}}
+                    <span class="tag" :class="props.row.client.private_face ? 'is-primary' : 'is-warning'">
+                        {{  props.row.client.private_face ? 'Да' : 'Нет'}}
                     </span>
 
                 </b-table-column>
 
                 <b-table-column class="is-middle" field="created_at" label="Дата составления" sortable centered>
                     <span class="tag is-success">
-                        {{ new Date(props.row.created_at).toLocaleDateString() }}
+                        {{ moment.utc(props.row.created_at).format('DD.MM.YYYY HH:mm') }}
                     </span>
                 </b-table-column>
             </template>
@@ -61,16 +58,14 @@
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                <strong>{{ props.row.client_lastname }} {{ props.row.client_firstname }} {{
-                                    props.row.client_patronymic }}</strong>
-                                <small>Логин: {{ props.row.client_net_login }}</small>
-                                <br>
-                                {{ props.row.problem }}
+                                <strong>{{ props.row.client.lastname }} {{ props.row.client.firstname }} {{
+                                    props.row.client.patronymic }}</strong>
+                                <small>Логин: {{ props.row.client.net_login }}</small>
                             </p>
+                            <h2>Что случилось:</h2> {{ props.row.problem }}
+                            Отправлены на обслуживание:
                             <ul>
-                                <li>Coffee</li>
-                                <li>Tea</li>
-                                <li>Milk</li>
+                                <li v-for="service in props.row.service">{{ getFullName(service) }}</li>
                             </ul>
                         </div>
                     </div>
@@ -81,8 +76,7 @@
 </template>
 
 <script>
-    import {debounce} from "lodash";
-
+    import moment from 'moment'
     export default {
         props: ['data'],
         data() {
@@ -91,20 +85,33 @@
                 defaultSortDirection: 'asc',
                 sortIcon: 'arrow-up',
                 sortIconSize: 'is-small',
-                searchWord: ''
+                searchWord: '',
+                moment: moment
+            }
+        },
+        methods: {
+            getFullName: function (arr) {
+                return arr.lastname + ' ' + arr.firstname + ' ' + arr.patronymic;
+            },
+            inArr: function (val, arr) {
+                if(!(arr instanceof Object)) return String(arr).toLowerCase().indexOf(val) > -1;
+                return Object.keys(arr).some(key => this.inArr(val, arr[key]));
             }
         },
         computed: {
             filtered: function () {
-                console.log(this.json);
-                let search = this.searchWord && this.searchWord.toLowerCase();
-                let data = this.json;
-                if(search) {
-                    data = data.filter(row => {
+                let data = this.json,
+                    search = this.searchWord && this.searchWord.toLowerCase();
+                let filter = (val, arr) => {
+                    return arr.filter(row => {
                         return Object.keys(row).some(key => {
-                            return String(row[key]).toLowerCase().indexOf(search) > -1
-                        })
-                    })
+                            return this.inArr(search, row[key]);
+                        });
+                    });
+                };
+
+                if (search) {
+                    data = filter(search, data);
                 }
                 return data;
             }
