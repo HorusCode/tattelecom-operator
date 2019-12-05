@@ -17501,3 +17501,7 @@ a {
   border-radius: 50%;
 }
 
+.submenu__item > a:hover {
+  color: #38c172;
+}
+

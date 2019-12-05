@@ -1,6 +1,6 @@
 <header class="app-container__header">
     <span class="page-title">
-        Новые заявления
+         @yield('title')
     </span>
     <div class="user-status d-flex justify-content-between align-items-center">
         <div class="user-name">

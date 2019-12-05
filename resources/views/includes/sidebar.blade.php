@@ -19,9 +19,9 @@
                     <span class="mdi mdi-chevron-up pos-right-null"></span>
                 </a>
                 <ul class="submenu">
-                    <li class="submenu__item"><a>Новые</a></li>
-                    <li class="submenu__item"><a>Активные</a></li>
-                    <li class="submenu__item"><a>Завершённые</a></li>
+                    <li class="submenu__item"><a href="{{ route('home') }}">Новые</a></li>
+                    <li class="submenu__item"><a href="{{ route('active') }}">Активные</a></li>
+                    <li class="submenu__item"><a href="{{ route('ended') }}">Завершённые</a></li>
                 </ul>
             </li>
             <li class="vertical-list__item --active">

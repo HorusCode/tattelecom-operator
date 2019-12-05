@@ -28,6 +28,7 @@
     right: 0;
   }
 }
+
 .submenu {
   transition: padding 300ms;
   padding: 0 .5rem;
@@ -50,6 +51,9 @@
       content: '';
       background: $primary;
       border-radius: 50%;
+    }
+    &:hover {
+      color: $primary;
     }
   }
 }

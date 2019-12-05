@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Вход в систему')
 @section('content')
     <div class="grid-login">
         <div class="col-bg" style="background-image: url('{{ asset('image/auth_bg.jpg') }}')"></div>

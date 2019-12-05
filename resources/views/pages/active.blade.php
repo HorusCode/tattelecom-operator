@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Новые заявления')
+@section('title', 'Активные заявления')
 @section('content')
     <div class="app-container">
         @include('includes.header')
@@ -8,7 +8,7 @@
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child">
-                           <new-statement-table data="{{ $data }}"></new-statement-table>
+                            <active-statement-table data="{{ $data }}"></active-statement-table>
                         </article>
                     </div>
                 </div>

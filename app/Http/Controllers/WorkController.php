@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WorkRequest;
 use App\Models\Statement;
 use App\Models\Work;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WorkController extends Controller

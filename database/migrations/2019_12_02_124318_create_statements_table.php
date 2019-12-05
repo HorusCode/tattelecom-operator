@@ -22,7 +22,7 @@ class CreateStatementsTable extends Migration
             $table->foreign('client_id')->references('id')->on('clients')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->string('problem');
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(true); // true - active, false - inactive
             $table->timestamps();
         });
     }
