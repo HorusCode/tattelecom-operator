@@ -65,4 +65,9 @@ class User extends Authenticatable
         return $this->api_token;
     }
 
+    public function getFullName()
+    {
+        return $this->lastname.' '.$this->firstname.' '.$this->patronymic;
+    }
+
 }

@@ -8,14 +8,7 @@
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child">
-                            @switch(Auth::user()->employee->name)
-                                @case('client_operator')
-                                <active-statement-table data="{{ $data }}"></active-statement-table>
-                                @break
-                                @case('service')
-                                <active-work-table data="{{ $data }}"></active-work-table>
-                                @break
-                            @endswitch
+                            <ended-statement-table data="{{ $data }}"></ended-statement-table>
                         </article>
                     </div>
                 </div>

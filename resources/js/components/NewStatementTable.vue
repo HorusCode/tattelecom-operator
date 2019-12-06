@@ -1,15 +1,35 @@
 <template>
     <section>
+        <b-notification
+                type="is-success"
+                has-icon
+                aria-close-label="Close notification"
+                :active.sync="isNotification"
+                role="alert"
+        >
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" v-for="url in docsUrl">
+                    <div class="list-group-content p-0">
+                        <div class="list-group-content-left">
+                            <span class="mdi mdi-file-word-outline item-icon "></span>
+                        </div>
+                        <div class="list-group-content-left">
+                            <div class="list-heading">{{ url.name }}</div>
+                        </div>
+                        <div class="list-group-content-right">
+                            <b-button tag="a" :href="url.url" type="is-success" outlined inverted>Скачать</b-button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </b-notification>
         <b-field position="is-right">
-            <b-input placeholder="Search..."
+            <b-input placeholder="Поиск.."
                      type="search"
                      icon="magnify"
                      v-model="searchWord"
-                     >
+            >
             </b-input>
-            <p class="control">
-                <button class="button is-primary">Search</button>
-            </p>
         </b-field>
         <b-table
                 :data="filtered"
@@ -47,7 +67,7 @@
 
                 <b-table-column class="is-middle" field="created_at" label="Дата составления" sortable centered>
                     <span class="tag is-success">
-                        {{ new Date(props.row.created_at).toLocaleDateString() }}
+                        {{ moment.utc(props.row.created_at).format('DD.MM.YYYY HH:mm') }}
                     </span>
                 </b-table-column>
                 <b-table-column class="is-middle" label="Действия" sortable centered>
@@ -64,21 +84,42 @@
                     </figure>
                     <div class="media-content">
                         <div class="content">
-                            <p>
-                                <strong>{{ props.row.client_lastname }} {{ props.row.client_firstname }} {{
-                                    props.row.client_patronymic }}</strong>
-                                <small>Логин: {{ props.row.client_net_login }}</small>
-                                <br>
-                                {{ props.row.problem }}
-                            </p>
-                            <ul>
-                                <li>Coffee</li>
-                                <li>Tea</li>
-                                <li>Milk</li>
-                            </ul>
+                            <header class="heading">
+                                <h4>{{props.row.client_lastname}} {{props.row.client_firstname}} {{props.row.client_patronymic}}</h4>
+                                <h6 class="has-text-weight-normal">Логин: {{ props.row.client_net_login }}</h6>
+                            </header>
+                            <div class="content-body">
+                                <ul class="list m-0">
+                                    <li class="list-item">
+                                        Адрес: <strong>{{props.row.client_address}}</strong>
+                                    </li>
+                                    <li class="list-item">
+                                        Паспорт: <strong>{{props.row.client_passport_number}} {{props.row.client_passport_series}}</strong>
+                                    </li>
+                                    <li class="list-item">
+                                        Телефон: <strong>{{props.row.client_phone}}</strong>
+                                    </li>
+                                    <li class="list-item">
+                                        Что случилось: <p class="has-text-weight-bold">{{props.row.problem}}</p>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </article>
+            </template>
+            <template slot="empty">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <b-icon
+                                    icon="emoticon-sad"
+                                    size="is-large">
+                            </b-icon>
+                        </p>
+                        <p>Данных нет.</p>
+                    </div>
+                </section>
             </template>
         </b-table>
         <b-modal :active.sync="isAddServiceManagerModal"
@@ -124,12 +165,15 @@
                         </div>
                     </div>
                 </section>
+
                 <footer class="modal-card-foot">
                     <button class="button" type="button" @click="isAddServiceManagerModal = false">Закрыть</button>
                     <button class="button is-primary" :disabled="createWorkBtn" @click="sendData">Назначить</button>
                 </footer>
             </div>
+
         </b-modal>
+
     </section>
 </template>
 
@@ -138,7 +182,9 @@
 
     export default {
         props: ['data'],
+
         data() {
+            console.log(JSON.parse(this.data));
             return {
                 json: JSON.parse(this.data),
                 defaultSortDirection: 'asc',
@@ -149,6 +195,9 @@
                 searchWord: '',
                 selectedUsers: [],
                 serviceUsers: [],
+                isNotification: false,
+                docsUrl: [],
+                moment: window.moment,
                 currentStatement: null,
                 rows: [{
                     value: null
@@ -200,9 +249,12 @@
                     statement: this.currentStatement
                 }).then(({data}) => {
                     this.$buefy.toast.open({
-                        message: data ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
-                        type: data ? 'is-success' : 'is-danger'
+                        message: data.status ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
+                        type: data.status ? 'is-success' : 'is-danger'
                     });
+                    this.isNotification = data.status;
+                    this.docsUrl = data.files;
+
                     this.json = _.filter(this.json, item => {
                         return item.id !== this.currentStatement;
                     });
@@ -238,7 +290,7 @@
             filtered: function () {
                 let search = this.searchWord && this.searchWord.toLowerCase();
                 let data = this.json;
-                if(search) {
+                if (search) {
                     data = data.filter(row => {
                         return Object.keys(row).some(key => {
                             return String(row[key]).toLowerCase().indexOf(search) > -1

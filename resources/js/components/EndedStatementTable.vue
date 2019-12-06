@@ -27,12 +27,6 @@
         >
 
             <template slot-scope="props">
-                <b-table-column class="is-middle" field="work_status" label="Статус" width="40" sortable numeric>
-                    <span class="tag" :class="props.row.work_status ? 'is-success' : 'is-danger'">
-                        {{  props.row.work_status ? 'В процессе' : 'Простаивает'}}
-                    </span>
-                </b-table-column>
-
                 <b-table-column class="is-middle" field="id" label="#" width="40" sortable numeric>
                     {{ props.row.id }}
                 </b-table-column>
@@ -48,7 +42,7 @@
 
                 </b-table-column>
 
-                <b-table-column class="is-middle" field="created_at" label="Дата составления" sortable centered>
+                <b-table-column class="is-middle" field="created_at" label="Дата завершения" sortable centered>
                     <span class="tag is-success">
                         {{ moment(props.row.updated_at).format('DD.MM.YYYY HH:mm') }}
                     </span>

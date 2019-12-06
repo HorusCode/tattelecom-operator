@@ -17,6 +17,6 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/active', 'HomeController@active')->name('active');
-    Route::get('/end', 'HomeController@end')->name('ended');
+    Route::get('/ended', 'HomeController@ended')->name('ended');
 });
 

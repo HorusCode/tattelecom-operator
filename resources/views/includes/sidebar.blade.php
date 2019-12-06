@@ -19,12 +19,27 @@
                     <span class="mdi mdi-chevron-up pos-right-null"></span>
                 </a>
                 <ul class="submenu">
-                    <li class="submenu__item"><a href="{{ route('home') }}">Новые</a></li>
-                    <li class="submenu__item"><a href="{{ route('active') }}">Активные</a></li>
-                    <li class="submenu__item"><a href="{{ route('ended') }}">Завершённые</a></li>
+                    @php
+                        $route = Route::currentRouteName();
+                    @endphp
+                    <li class="submenu__item">
+                        <a class="{{ $route === 'home' ? 'active' : ''}}"
+                           href="{{ route('home') }}">Новые</a>
+                    </li>
+                    <li class="submenu__item">
+                        <a class="{{ $route === 'active' ? 'active' : '' }}"
+                           href="{{ route('active') }}">Активные</a>
+                    </li>
+                    <li class="submenu__item">
+                        <a class="{{ $route === 'ended' ? 'active' : ''}}"
+                           href="{{ route('ended') }}">Завершённые</a>
+                    </li>
                 </ul>
             </li>
-
         </ul>
     </div>
+    <header class="sidebar__footer d-flex justify-content-center align-items-center">
+        <b-button type="is-primary" tag="a" expanded
+                  icon-right="logout" href="{{ route('logout')}}"/>
+    </header>
 </aside>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Новые заявления')
+@section('title', $title)
 @section('content')
     <div class="app-container">
         @include('includes.header')
@@ -8,7 +8,15 @@
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child">
+
+                            @switch(Auth::user()->employee->name)
+                                @case('client_operator')
                            <new-statement-table data="{{ $data }}"></new-statement-table>
+                                @break
+                                @case('service')
+                                <new-work-table data="{{ $data }}"></new-work-table>
+                                @break
+                                @endswitch
                         </article>
                     </div>
                 </div>

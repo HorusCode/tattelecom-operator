@@ -25,7 +25,7 @@ class CreateWorksTable extends Migration
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('operator_user_id')->references('id')->on('users')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->boolean('status')->default(false); //0 - in the process, 1 - completed
+            $table->smallInteger('status')->default(0); //0 - is not active, 1 - in the process, 2 - finished
             $table->index(['service_user_id', 'operator_user_id']);
             $table->timestamps();
         });

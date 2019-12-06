@@ -44,6 +44,7 @@ a {
 .sidebar {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   position: fixed;
   top: 30px;
   left: 20px;
@@ -55,8 +56,8 @@ a {
   @extend .box;
 }
 
-//3.2 Sidebar header
-.sidebar__header {
+//3.2 Sidebar header / footer
+.sidebar__header, .sidebar__footer {
   width: 100%;
   padding: 1rem;
   background-color: #00000003;
@@ -82,8 +83,10 @@ a {
 
 // 3.3 Sidebar content
 .sidebar__content {
+  height: 100%;
   padding: 0 1.5rem 1.5rem;
 }
+
 
 
 // 4 Content block

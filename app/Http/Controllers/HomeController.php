@@ -7,24 +7,20 @@ use App\Models\Work;
 use App\Services\HomeServices;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
 
-    protected $statement;
     protected $homeServices;
-    protected $work;
 
     /**
      * Create a new controller instance.
      *
-     * @param Statement $statement
      * @param HomeServices $homeServices
      */
-    public function __construct(Statement $statement, Work $work, HomeServices $homeServices)
+    public function __construct(HomeServices $homeServices)
     {
-        $this->statement = $statement;
-        $this->work = $work;
         $this->homeServices = $homeServices;
         $this->middleware('auth');
     }
@@ -36,49 +32,55 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = $this->statement
-            ->whereStatus(true)
-            ->with('client')
-            ->get()->toArray();
+        $title = '';
+        switch (Auth::user()->employee->name) {
+            case 'client_operator':
+                $data = $this->homeServices->getStatementForClientOperator();
+                $title = 'Новые заявления';
+                break;
+            case 'service':
+                $data = $this->homeServices->getStatementForServiceOperator();
+                $title = 'Новые работы';
+                break;
+        }
         $arr = $this->homeServices->getStatementFlatArray($data);
-        return view('pages.home')->with('data', json_encode($arr));
+        return view('pages.home')->with(['data' => json_encode($arr), 'title' => $title]);
     }
 
     public function active() //TODO: Create Resource class
     {
-        $data = $this->work
-            ->whereStatus('false')
-            ->get()
-            ->groupBy('statement_id')
-            ;
+        $title = '';
         $arr = [];
-        $arrKey = 0;
-        foreach ($data as $i => $datum) {
-            $stmt = $this->statement->find($i);
-            $client = $stmt->client;
-            $service = [];
-            $date = '';
-            foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
-                $date = $value->created_at;
-            }
-            $arr[$arrKey] = [
-                'id' => $i,
-                'problem' => $stmt->problem,
-                'client' => [
-                    'id' => $client['id'],
-                    'firstname' => $client['firstname'],
-                    'lastname' => $client['lastname'],
-                    'patronymic' => $client['patronymic'],
-                    'address' => $client['address'],
-                    'private_face' => $client['private_face'],
-                    'net_login' => $client['net_login'],
-                ],
-                'service' => $service,
-                'created_at' => $date
-            ];
-            $arrKey++;
+        switch (Auth::user()->employee->name) {
+            case 'client_operator':
+                $arr = $this->homeServices->getActiveWorkForClientOperator();
+                $title = 'Новые заявления';
+                break;
+            case 'service':
+                $arr = $this->homeServices->getActiveWorkForServiceOperator();
+                $title = 'Активные работы';
+                break;
         }
-        return view('pages.active')->with('data', json_encode($arr));
+
+        return view('pages.active')->with(['data' => json_encode($arr), 'title'=> $title]);
+    }
+
+
+    public function ended() //TODO: Create Resource class
+    {
+        $title = '';
+        $arr = [];
+        switch (Auth::user()->employee->name) {
+            case 'client_operator':
+                $arr = $this->homeServices->getEndedWorkForClientOperator();
+                $title = 'Закрытые заявления';
+                break;
+            case 'service':
+                $arr = $this->homeServices->getEndedWorkForServiceOperator();
+                $title = 'Завершённые работы';
+                break;
+        }
+
+        return view('pages.ended')->with(['data' => json_encode($arr), 'title'=> $title]);
     }
 }

@@ -4,17 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WorkRequest;
 use App\Models\Statement;
+use App\Models\User;
 use App\Models\Work;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class WorkController extends Controller
 {
     protected $work;
+    protected $user;
     protected $statement;
 
-    public function __construct(Work $work, Statement $statement)
+    public function __construct(Work $work, Statement $statement, User $user)
     {
         $this->work = $work;
+        $this->user = $user;
         $this->statement = $statement;
     }
 
@@ -30,9 +36,51 @@ class WorkController extends Controller
                 'updated_at' => date('Y-m-d H-i-s')
             ];
         }
-        $k = $this->statement->find($request->statement)->update(['status' => false]);
-        dd($k);
+        $stmt = $this->statement->find($request->statement);
+        $stmt->update(['status' => false]);
         $created = $this->work->insert($data);
-        return response()->json($created);
+        $user = $stmt->client;
+        $fullNameClient = $user->lastname . ' ' . $user->firstname . ' ' . $user->patronymic;
+        $filesArr = [];
+        if ($created) {
+            foreach ($request->ids as $id) {
+                $service = $this->user->find($id);
+                $date = Carbon::now();
+                $_doc = new TemplateProcessor(public_path('docx\template.docx'));
+                $_doc->setValue('created_at', $date);
+                $_doc->setValue('client_fullname', $fullNameClient);
+                $_doc->setValue('client_address', $user->address);
+                $_doc->setValue('passport_series', $user->passport_series);
+                $_doc->setValue('passport_number', $user->passport_number);
+                $_doc->setValue('client_phone', $user->phone);
+                $_doc->setValue('client_operator_fullname', Auth::user()->getFullName());
+                $_doc->setValue('client_problem', $stmt->problem);
+                $_doc->setValue('service_fullname', $service->getFullName());
+                $_doc->setValue('service_phone', $service->phone);
+                $filename = "statement-{$stmt->id}-{$id}-{$date->day}-{$date->month}-{$date->year}.docx";
+                $filesArr[] = [
+                    'name' => $filename,
+                    'url' => asset('files/' . $filename)
+                ];
+                $_doc->saveAs(public_path('files/' . $filename));
+            }
+
+        }
+
+        return response()->json(['status' => $created, 'files' => $filesArr]);
+    }
+
+
+    public function start(Request $request)
+    {
+        $this->statement->find($request->statement_id)->update(['status'=>false]);
+        $status = $this->work->find($request->work_id)->update(['status'=> 1]);
+        return response()->json(['status' => $status]);
+    }
+
+    public function stop(Request $request)
+    {
+        $status = $this->work->find($request->work_id)->update(['status'=> 2]);
+        return response()->json(['status' => $status]);
     }
 }
