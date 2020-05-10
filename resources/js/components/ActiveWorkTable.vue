@@ -113,7 +113,6 @@
     export default {
         props: ['data'],
         data() {
-            console.log(JSON.parse(this.data));
             return {
                 json: JSON.parse(this.data),
                 defaultSortDirection: 'asc',
@@ -133,7 +132,6 @@
             },
             stopWork: function(arr)
             {
-                console.log(arr);
                 axios.post(`/api/works/stop`, {
                     work_id: arr.work_id,
                     statement_id: arr.id

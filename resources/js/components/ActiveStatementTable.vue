@@ -131,9 +131,9 @@
                 return arr.lastname + ' ' + arr.firstname + ' ' + arr.patronymic;
             },
             inArr: function (val, arr) {
-                if(!(arr instanceof Object)) return String(arr).toLowerCase().indexOf(val) > -1;
-                return Object.keys(arr).some(key => this.inArr(val, arr[key]));
-            }
+            if(!(arr instanceof Object)) return String(arr).toLowerCase().indexOf(val) > -1;
+            return Object.keys(arr).some(key => this.inArr(val, arr[key]));
+          }
         },
         computed: {
             filtered: function () {

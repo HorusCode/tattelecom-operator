@@ -7,7 +7,7 @@
             <div class="logo">
                 <img src="{{ asset('image/logo.png') }}" alt="Logo" width="120" height="120" class="logo--image">
             </div>
-            <h1>{{ __('auth.title') }}</h1>
+            <h1 class="title has-text-weight-normal">{{ __('auth.title') }}</h1>
             <form class="form" method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="input-line">
