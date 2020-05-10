@@ -1,0 +1,58 @@
+// Body
+$body-bg: #f8fafc;
+
+// Typography
+$font-family-sans-serif: 'Ubuntu', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #694ad3;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+$muted: #818181;
+$grey: #535252;
+$white: #fff;
+
+// Border color
+$border-color: #0000000a;
+$radius-general: 3px;
+
+$grid-gap: 1.1rem;
+$margin-gap: 1.4rem;
+$content-padding: 0 2rem;
+
+$text-color: darken($grey, 15%);
+
+$primary: $orange;
+$secondary: $purple;
+$success: $green;
+$danger: $red;
+$warning: $orange;
+$info: $blue;
+
+
+
+$link: $orange;
+
+
+//Breakpoints
+$breakpoint-phone: 480px;
+
+
+$input-bg: #e6e6e6;
+$table-bg: #f6f6f6;
+
+
+//Spinner
+$basic-spinner-dimensions: 64px; //width and height of spinner
+$main-spinner-dimensions: $basic-spinner-dimensions - 2px * 2; //width and height of bigger circle
+$small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of smaller circle
+$spinner-color: lighten($primary, 15%);

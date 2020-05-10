@@ -1,0 +1,52 @@
+@mixin button-color($bg) {
+  background-color: $bg;
+  color: set-text-color($bg);
+  transition: background-color .2s ease-in-out;
+  &:hover {
+    background-color:darken($bg,8%);
+    transition: all 0.3s ease;
+  }
+  &:active {
+    background-color:lighten($bg,10%);
+  }
+  .spinner {
+    &:before, &:after {
+      border-color: set-text-color($bg);
+    }
+
+  }
+}
+
+@mixin button-outlined($color) {
+  background-color: transparent;
+  box-shadow: none;
+  border-color: $color;
+  color: $color;
+  transition: background-color,color .2s ease-in-out;
+  &:hover {
+    background-color: $color;
+    color: white;
+  }
+}
+
+@mixin button-text($color) {
+  background-color: transparent;
+  box-shadow: none;
+  border: 0;
+  color: $color;
+  transition: background-color .2s ease-in-out;
+  &:hover {
+    background-color: transparentize($color, .72);
+    color: darken($color, 6%);
+  }
+}
+
+
+
+@function set-text-color($color) {
+  @if (lightness($color) > 70) {
+    @return #000000; // Lighter backgorund, return dark color
+  } @else {
+    @return #ffffff; // Darker background, return light color
+  }
+}

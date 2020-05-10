@@ -1,0 +1,13 @@
+@mixin box($shadow-dir: bottom) {
+    background-color: white;
+    border-radius: .6rem;
+    @if($shadow-dir == bottom) {
+        box-shadow: 0 3px 14px 0 #0000001a;
+    } @else if($shadow-dir == top) {
+        box-shadow: 0 -3px 14px 0 #0000001a;
+    }
+
+}
+.box {
+    @include box();
+}

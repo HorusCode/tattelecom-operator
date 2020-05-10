@@ -1,0 +1,44 @@
+// CSS libs
+@import "~normalize.css";
+
+// Font
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&display=swap&subset=cyrillic');
+@import '~@mdi/font/css/materialdesignicons.min.css';
+
+
+
+// Variables and settings
+@import 'base/variables';
+@import "base/settings";
+
+@import "utils/grid";
+@import "utils/flex";
+@import "utils/anims";
+
+//Mixins
+@import "mixins/mixins";
+
+
+//Components
+@import "components/card";
+@import "components/nav-sidebar";
+@import "components/input";
+@import "components/button";
+@import "components/list";
+@import "components/header";
+@import "components/content";
+@import "components/footer";
+@import "components/modal";
+@import "components/table";
+@import "components/divider";
+@import "components/dropdown";
+@import "components/preloader";
+@import "components/alert";
+@import "components/checkbox";
+@import "components/radio";
+@import "components/form";
+@import "components/select";
+
+// @import "../css/animate.css";
+
+@import "base/core";

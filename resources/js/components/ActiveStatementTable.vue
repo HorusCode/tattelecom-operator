@@ -64,7 +64,8 @@
                     <div class="media-content">
                         <div class="content">
                             <header class="heading">
-                                <h4>{{props.row.client.lastname}} {{props.row.client.firstname}} {{props.row.client.patronymic}}</h4>
+                                <h4>{{props.row.client.lastname}} {{props.row.client.firstname}}
+                                    {{props.row.client.patronymic}}</h4>
                                 <h6 class="has-text-weight-normal">Логин: {{ props.row.client.net_login }}</h6>
                             </header>
                             <div class="content-body">
@@ -73,7 +74,8 @@
                                         Адрес: <strong>{{props.row.client.address}}</strong>
                                     </li>
                                     <li class="list-item">
-                                        Паспорт: <strong>{{props.row.client.passport_number}} {{props.row.client.passport_series}}</strong>
+                                        Паспорт: <strong>{{props.row.client.passport_number}}
+                                        {{props.row.client.passport_series}}</strong>
                                     </li>
                                     <li class="list-item">
                                         Телефон: <strong>{{props.row.client.phone}}</strong>
@@ -112,46 +114,49 @@
 </template>
 
 <script>
-    import moment from 'moment'
-    export default {
-        props: ['data'],
-        data() {
-            console.log(JSON.parse(this.data));
-            return {
-                json: JSON.parse(this.data),
-                defaultSortDirection: 'asc',
-                sortIcon: 'arrow-up',
-                sortIconSize: 'is-small',
-                searchWord: '',
-                moment: moment
-            }
-        },
-        methods: {
-            getFullName: function (arr) {
-                return arr.lastname + ' ' + arr.firstname + ' ' + arr.patronymic;
-            },
-            inArr: function (val, arr) {
-            if(!(arr instanceof Object)) return String(arr).toLowerCase().indexOf(val) > -1;
-            return Object.keys(arr).some(key => this.inArr(val, arr[key]));
-          }
-        },
-        computed: {
-            filtered: function () {
-                let data = this.json,
-                    search = this.searchWord && this.searchWord.toLowerCase();
-                let filter = (val, arr) => {
-                    return arr.filter(row => {
-                        return Object.keys(row).some(key => {
-                            return this.inArr(search, row[key]);
-                        });
-                    });
-                };
+  import moment from 'moment';
 
-                if (search) {
-                    data = filter(search, data);
-                }
-                return data;
-            }
+  export default {
+    props: ['data'],
+    data() {
+      console.log(JSON.parse(this.data));
+      return {
+        json: JSON.parse(this.data),
+        defaultSortDirection: 'asc',
+        sortIcon: 'arrow-up',
+        sortIconSize: 'is-small',
+        searchWord: '',
+        moment: moment,
+      };
+    },
+    methods: {
+      getFullName: function(arr) {
+        return arr.lastname + ' ' + arr.firstname + ' ' + arr.patronymic;
+      },
+      inArr: function(val, arr) {
+        if (!(arr instanceof Object)) {
+          return String(arr).toLowerCase().indexOf(val) > -1;
         }
-    }
+        return Object.keys(arr).some(key => this.inArr(val, arr[key]));
+      },
+    },
+    computed: {
+      filtered: function() {
+        let data = this.json,
+            search = this.searchWord && this.searchWord.toLowerCase();
+        let filter = (val, arr) => {
+          return arr.filter(row => {
+            return Object.keys(row).some(key => {
+              return this.inArr(search, row[key]);
+            });
+          });
+        };
+
+        if (search) {
+          data = filter(search, data);
+        }
+        return data;
+      },
+    },
+  };
 </script>
