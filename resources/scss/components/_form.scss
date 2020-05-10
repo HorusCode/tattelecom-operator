@@ -3,3 +3,16 @@
   justify-content: space-evenly;
   align-items: center;
 }
+
+
+.input-label {
+  color: $primary;
+}
+
+.label-link {
+  display: block;
+  color: $link;
+  text-align: right;
+  font-weight: 500;
+  cursor: pointer;
+}

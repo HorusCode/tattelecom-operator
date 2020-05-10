@@ -1,11 +1,10 @@
-
-<header class="app-container__header">
+<header class="header">
     <span class="page-title">
          @yield('title')
     </span>
+    <div class="spacer"></div>
     <div class="d-flex justify-content-between align-items-center">
         <div class="user-name">
-            {{ Auth::user()->getFullName()  }}
             <span class="user-employee text-muted">
                 {{ __("base.".Auth::user()->employee->name)}}
             </span>
@@ -15,5 +14,4 @@
         </span>
 
     </div>
-
 </header>

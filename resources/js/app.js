@@ -1,5 +1,7 @@
 
 require('./bootstrap');
+
+
 import Vue from 'vue'
 import Buefy from 'buefy'
 
@@ -12,6 +14,6 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 
 
 
-const app = new Vue({
+new Vue({
     el: '#app',
 });

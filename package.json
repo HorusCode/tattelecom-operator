@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "@mdi/font": "^4.9.95",
+        "animejs": "^3.2.0",
         "axios": "^0.19.2",
         "buefy": "^0.8.17",
         "cross-env": "^5.2.1",

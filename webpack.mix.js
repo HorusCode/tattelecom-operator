@@ -12,7 +12,7 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').
-    sass('resources/scss/global.scss', 'public/css').
+    sass('resources/scss/global.scss', 'public/css/app.css').
     extract([
       'lodash',
       'axios',

@@ -1,6 +1,5 @@
 // Collapsible lists
 import anime from 'animejs';
-import $ from '@/helpers/dom';
 
 window.onload = () => {
   $('.vertical-list__trigger').each(item => {
@@ -8,7 +7,7 @@ window.onload = () => {
       let subMenu = this.nextElementSibling;
       this.querySelector('.mdi-chevron-up').classList.toggle('mdi-rotate-180');
       let arr =
-        subMenu.clientHeight == subMenu.scrollHeight
+        subMenu.clientHeight === subMenu.scrollHeight
           ? [subMenu.scrollHeight, 0]
           : [0, subMenu.scrollHeight];
       anime({

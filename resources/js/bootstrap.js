@@ -1,9 +1,13 @@
 window._ = require('lodash');
-
-
-
 window.axios = require('axios');
 window.moment = require('moment');
+
+import $ from './dom';
+window.$ = $;
+require('./ui.js');
+
+
+
 moment.locale('ru');
 
 
