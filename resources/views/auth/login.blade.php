@@ -10,32 +10,36 @@
             <h1 class="title has-text-weight-normal">{{ __('auth.title') }}</h1>
             <form class="form" method="POST" action="{{ route('login') }}">
                 @csrf
-                <div class="input-line">
-                    <label class="input-label" for="login">{{ __('auth.login') }}</label>
-                    <div class="input-group">
-                        <input class="input @error('login') invalid @enderror" type="text" id="login" name="login">
-                        <span class="mdi mdi-login-variant pos-left"></span>
+
+                <div class="field">
+                    <label class="label">Логин</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input @error('login') is-danger @enderror" type="text" placeholder="Логин" name="login">
+                        <span class="icon is-small is-left">
+                          <i class="mdi mdi-login-variant"></i>
+                        </span>
                     </div>
                     @error('login')
-                    <span class="invalid-feedback">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                    <p class="help is-danger">{{ $message }}</p>
                     @enderror
-
                 </div>
-                <div class="input-line">
-                    <label class="input-label" for="password">{{__('auth.password')}}</label>
-                    <div class="input-group">
-                        <input class="input @error('password') invalid @enderror" type="password" id="password" name="password">
-                        <span class="mdi mdi-textbox-password pos-left"></span>
-                        <span class="mdi mdi-eye-outline pos-right text-muted"></span>
+
+                <div class="field">
+                    <label class="label">Пароль</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input @error('password') is-danger @enderror" type="password" placeholder="Пароль" name="password">
+                        <span class="icon is-small is-left">
+                          <i class="mdi mdi-textbox-password"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                          <i class="mdi mdi-eye-outline"></i>
+                        </span>
                     </div>
                     @error('password')
-                    <span class="invalid-feedback">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                    <p class="help is-danger">{{ $message }}</p>
                     @enderror
                 </div>
+
                 <div class="form--button-group">
                     <button type="submit" class="btn btn-primary">{{ __('auth.signin') }}</button>
                 </div>

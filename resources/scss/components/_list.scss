@@ -33,7 +33,7 @@
    // transition: all .2s;
     margin: .1rem 0;
     cursor: pointer;
-    &:hover {
+    &:hover, &.active {
       color: $primary;
     }
   }
@@ -48,6 +48,7 @@
 .submenu {
   transition: padding 300ms;
   padding: 0 .5rem;
+  overflow: hidden;
   &__item > a {
     display: block;
     color: #6c757d;

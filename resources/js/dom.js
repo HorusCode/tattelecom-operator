@@ -468,7 +468,7 @@ const $ = (function() {
     ///////////////////
 
     /**
-     * Execute a funtion on each element in the current collection
+     * Execute a function on each element in the current collection
      * @param  {Function} fn
      * @return {this}
      */

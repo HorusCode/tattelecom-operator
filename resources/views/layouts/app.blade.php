@@ -15,9 +15,11 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-<div id="app" class="grid-main">
-    @includeWhen(Route::currentRouteName() != 'login-form', 'includes.sidebar')
-    @include('includes.header')
+<div id="app" class="{{ (Route::currentRouteName() != 'login-form') ? 'grid-main' : '' }}">
+    @if(Route::currentRouteName() != 'login-form')
+        @include('includes.sidebar')
+        @include('includes.header')
+    @endif
     <main class="w-content">
         @yield('content')
     </main>
@@ -28,9 +30,9 @@
 @stack('scripts')
 @if(Route::currentRouteName() == 'home')
 
-<script type="text/javascript">
-    localStorage.setItem('token', '{{ Auth::user()->api_token }}');
-</script>
+    <script type="text/javascript">
+      localStorage.setItem('token', '{{ Auth::user()->api_token }}');
+    </script>
 @endif
 </body>
 </html>

@@ -1,4 +1,7 @@
 <header class="header">
+    <div class="logo">
+        <img src="{{ asset('image/logo.png') }}" alt="Logo" class="logo--image">
+    </div>
     <span class="page-title">
          @yield('title')
     </span>

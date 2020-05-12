@@ -1,8 +1,5 @@
 <aside class="sidebar">
-    <header class="sidebar__header d-flex justify-content-between align-items-center">
-        <div class="logo">
-            <img src="{{ asset('image/logo.png') }}" alt="Logo" class="logo--image">
-        </div>
+    <header class="sidebar__header">
         <div class="burger">
             <span></span>
             <span></span>
@@ -13,10 +10,9 @@
         <ul class="sidebar__nav-menu vertical-list">
             <li class="vertical-list__heading">Меню</li>
             <li class="vertical-list__item">
-                <a href="#" aria-expanded="true">
-                    <span class="mdi mdi-clipboard-text-outline pos-left-null"></span>
-                    Заявления
-                    <span class="mdi mdi-chevron-up pos-right-null"></span>
+                <a href="#" aria-expanded="true" class="vertical-list__trigger">
+                    <span class="mdi mdi-clipboard-text-outline pos-left-null"></span>Заявления<span
+                            class="mdi mdi-chevron-up pos-right-null"></span>
                 </a>
                 <ul class="submenu">
                     @php
@@ -38,8 +34,8 @@
             </li>
         </ul>
     </div>
-    <header class="sidebar__footer d-flex justify-content-center align-items-center">
+    <footer class="sidebar__footer d-flex justify-content-center align-items-center">
         <b-button type="is-primary" tag="a" expanded
-                  icon-right="logout" href="{{ route('logout')}}"></b-button>
-    </header>
+                  icon-right="logout" id="logout" href="{{ route('logout')}}"></b-button>
+    </footer>
 </aside>

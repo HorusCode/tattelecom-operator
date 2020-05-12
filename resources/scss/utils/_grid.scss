@@ -10,8 +10,8 @@
   grid-template-areas: "h h h h"
                        "s c c c"
                        "s c c c";
-  grid-template-columns: 300px repeat(3, 1fr);
-  grid-template-rows: 5rem repeat(2, 1fr) 5rem;
+  grid-template-columns: auto repeat(3, 1fr);
+  grid-template-rows: 5.5rem repeat(2, 1fr) 5rem;
   height: inherit;
   width: inherit;
 }
