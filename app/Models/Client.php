@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
+
     protected $fillable = [
         'firstname',
         'lastname',
         'patronymic',
-        'net_login',
+        'email',
         'phone',
         'passport_number',
         'passport_series',

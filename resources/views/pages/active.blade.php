@@ -9,7 +9,7 @@
                         <article class="tile is-child">
                             @switch(Auth::user()->employee->name)
                                 @case('client_operator')
-                                <active-statement-table data="{{ $data }}"></active-statement-table>
+                                <statements data="{{ $data }}"/>
                                 @break
                                 @case('service')
                                 <active-work-table data="{{ $data }}"></active-work-table>

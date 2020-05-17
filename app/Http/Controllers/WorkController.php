@@ -73,14 +73,16 @@ class WorkController extends Controller
 
     public function start(Request $request)
     {
-        $this->statement->find($request->statement_id)->update(['status'=>false]);
-        $status = $this->work->find($request->work_id)->update(['status'=> 1]);
+        $statement = $this->statement->find($request->statement_id);
+        $statement->update(['status' => false]);
+        $status = $this->work->find($request->work_id)->update(['status' => 1]);
+
         return response()->json(['status' => $status]);
     }
 
     public function stop(Request $request)
     {
-        $status = $this->work->find($request->work_id)->update(['status'=> 2]);
+        $status = $this->work->find($request->work_id)->update(['status' => 2]);
         return response()->json(['status' => $status]);
     }
 }

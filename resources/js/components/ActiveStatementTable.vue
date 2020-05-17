@@ -55,46 +55,7 @@
                 </b-table-column>
             </template>
             <template slot="detail" slot-scope="props">
-                <article class="media">
-                    <figure class="media-left">
-                        <span class="avatar">
-                            <span class="mdi mdi-account-circle-outline"></span>
-                        </span>
-                    </figure>
-                    <div class="media-content">
-                        <div class="content">
-                            <header class="heading">
-                                <h4>{{props.row.client.lastname}} {{props.row.client.firstname}}
-                                    {{props.row.client.patronymic}}</h4>
-                                <h6 class="has-text-weight-normal">Логин: {{ props.row.client.net_login }}</h6>
-                            </header>
-                            <div class="content-body">
-                                <ul class="list m-0">
-                                    <li class="list-item">
-                                        Адрес: <strong>{{props.row.client.address}}</strong>
-                                    </li>
-                                    <li class="list-item">
-                                        Паспорт: <strong>{{props.row.client.passport_number}}
-                                        {{props.row.client.passport_series}}</strong>
-                                    </li>
-                                    <li class="list-item">
-                                        Телефон: <strong>{{props.row.client.phone}}</strong>
-                                    </li>
-                                    <li class="list-item">
-                                        Что случилось: <p class="has-text-weight-bold">{{props.row.problem}}</p>
-                                    </li>
-                                </ul>
-                                <h6>Назначены на работу:</h6>
-                                <ul class="list m-0">
-                                    <li class="list-item" v-for="service in props.row.service">
-                                        <span class="is-block">ФИО: <strong>{{ getFullName(service) }}</strong></span>
-                                        <span class="is-block">Телефон: <strong>{{ service.phone }}</strong></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                <user-list :data="props"/>
             </template>
             <template slot="empty">
                 <section class="section">
@@ -115,11 +76,13 @@
 
 <script>
   import moment from 'moment';
-
+  import UserList from './UserList';
+  import {search} from '../mixins';
   export default {
+    components: {UserList},
     props: ['data'],
+    mixins: [search],
     data() {
-      console.log(JSON.parse(this.data));
       return {
         json: JSON.parse(this.data),
         defaultSortDirection: 'asc',
@@ -129,34 +92,6 @@
         moment: moment,
       };
     },
-    methods: {
-      getFullName: function(arr) {
-        return arr.lastname + ' ' + arr.firstname + ' ' + arr.patronymic;
-      },
-      inArr: function(val, arr) {
-        if (!(arr instanceof Object)) {
-          return String(arr).toLowerCase().indexOf(val) > -1;
-        }
-        return Object.keys(arr).some(key => this.inArr(val, arr[key]));
-      },
-    },
-    computed: {
-      filtered: function() {
-        let data = this.json,
-            search = this.searchWord && this.searchWord.toLowerCase();
-        let filter = (val, arr) => {
-          return arr.filter(row => {
-            return Object.keys(row).some(key => {
-              return this.inArr(search, row[key]);
-            });
-          });
-        };
 
-        if (search) {
-          data = filter(search, data);
-        }
-        return data;
-      },
-    },
   };
 </script>

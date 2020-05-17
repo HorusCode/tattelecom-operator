@@ -7,7 +7,7 @@
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child">
-                            <ended-statement-table data="{{ $data }}"></ended-statement-table>
+                            <statements data="{{ $data }}"></statements>
                         </article>
                     </div>
                 </div>

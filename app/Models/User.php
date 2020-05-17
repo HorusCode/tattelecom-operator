@@ -25,6 +25,7 @@ class User extends Authenticatable
         'passport_number',
         'passport_series',
         'password',
+        'email',
         'api_token'
     ];
 
@@ -67,7 +68,12 @@ class User extends Authenticatable
 
     public function getFullName()
     {
-        return $this->lastname.' '.$this->firstname.' '.$this->patronymic;
+        return $this->lastname . ' ' . $this->firstname . ' ' . $this->patronymic;
+    }
+
+    public function inRole(string $roleName)
+    {
+        return $this->employee->name === $roleName;
     }
 
 }

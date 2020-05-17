@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Statement;
 use App\Models\Work;
+use App\Notifications\NewWorkCreated;
 use App\Services\HomeServices;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -43,8 +44,8 @@ class HomeController extends Controller
                 $title = 'Новые работы';
                 break;
         }
-        $arr = $this->homeServices->getStatementFlatArray($data);
-        return view('pages.home')->with(['data' => json_encode($arr), 'title' => $title]);
+       // $arr = $this->homeServices->getStatementFlatArray($data);
+        return view('pages.home')->with(['data' => json_encode($data), 'title' => $title]);
     }
 
     public function active() //TODO: Create Resource class
@@ -54,7 +55,7 @@ class HomeController extends Controller
         switch (Auth::user()->employee->name) {
             case 'client_operator':
                 $arr = $this->homeServices->getActiveWorkForClientOperator();
-                $title = 'Новые заявления';
+                $title = 'Активные заявления';
                 break;
             case 'service':
                 $arr = $this->homeServices->getActiveWorkForServiceOperator();

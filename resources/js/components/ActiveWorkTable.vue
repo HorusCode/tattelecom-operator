@@ -62,7 +62,7 @@
                         <div class="content">
                             <header class="heading">
                                 <h4>{{props.row.client.lastname}} {{props.row.client.firstname}} {{props.row.client.patronymic}}</h4>
-                                <h6 class="has-text-weight-normal">Логин: {{ props.row.client.net_login }}</h6>
+                                <h6 class="has-text-weight-normal">Почта: {{ props.row.client.email }}</h6>
                             </header>
                             <div class="content-body">
                                 <ul class="list m-0">

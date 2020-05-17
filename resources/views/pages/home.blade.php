@@ -10,12 +10,12 @@
 
                             @switch(Auth::user()->employee->name)
                                 @case('client_operator')
-                           <new-statement-table data="{{ $data }}"></new-statement-table>
+                                <statements data="{{ $data }}" :show-btn="true"/>
                                 @break
                                 @case('service')
-                                <new-work-table data="{{ $data }}"></new-work-table>
+                                <new-work-table data="{{ $data }}"/>
                                 @break
-                                @endswitch
+                            @endswitch
                         </article>
                     </div>
                 </div>
@@ -23,3 +23,4 @@
         </div>
     </div>
 @endsection
+
