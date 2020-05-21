@@ -37,4 +37,11 @@ window.onload = () => {
       logout.classList.replace('btn-primary-text', 'btn-primary');
     }
   });
+
+  $('.password-eye').on('click', function() {
+    let $input = $("input[name='password']")[0];
+    $input.type = $input.type === 'password' ? 'text' : 'password';
+    $(this).children('.mdi').changeClass('mdi-eye-outline', 'mdi-eye-off-outline');
+  });
+
 };

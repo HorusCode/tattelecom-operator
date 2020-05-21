@@ -6,10 +6,11 @@
   position: sticky;
   margin: $grid-gap 0 $grid-gap $grid-gap;
   width: 280px;
-  height: calc(100% - #{$grid-gap * 2});
+  height: calc(100vh - #{$grid-gap * 8});
   flex: 0 0 280px;
   overflow: hidden;
   transition: width .2s cubic-bezier(0.37, 0, 0.63, 1);
+  top: $grid-gap;
   @include box();
 
   &.close {

@@ -1,9 +1,7 @@
 .grid-main {
   .w-content {
-    display: grid;
     grid-area: c;
     margin: $grid-gap;
-    grid-template-rows: 5rem 1fr;
     &__header {
       padding: $content-padding;
       align-self: center;

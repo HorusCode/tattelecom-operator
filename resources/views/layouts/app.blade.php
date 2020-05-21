@@ -28,8 +28,7 @@
 <script src="{{ mix('js/vendor.js') }}"></script>
 <script src="{{ mix('js/app.js') }}"></script>
 @stack('scripts')
-@if(Route::currentRouteName() == 'home')
-
+@if(Route::currentRouteName() == 'inactive')
     <script type="text/javascript">
       localStorage.setItem('token', '{{ Auth::user()->api_token }}');
     </script>

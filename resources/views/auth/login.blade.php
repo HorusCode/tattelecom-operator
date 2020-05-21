@@ -31,7 +31,7 @@
                         <span class="icon is-small is-left">
                           <i class="mdi mdi-textbox-password"></i>
                         </span>
-                        <span class="icon is-small is-right">
+                        <span class="password-eye icon is-small is-right">
                           <i class="mdi mdi-eye-outline"></i>
                         </span>
                     </div>

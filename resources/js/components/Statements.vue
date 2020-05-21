@@ -45,7 +45,8 @@
         >
 
             <template slot-scope="props">
-                <b-table-column centered :visible="props.row.hasOwnProperty('work_status')" field="work_status" label="Статус" width="40" sortable>
+                <b-table-column centered :visible="props.row.hasOwnProperty('work_status')" field="work_status"
+                                label="Статус" width="40" sortable>
                     <span class="tag" :class="props.row.work_status ? 'is-success' : 'is-danger'">{{  props.row.work_status ? 'В процессе' : 'Простаивает'}}</span>
                 </b-table-column>
 
@@ -53,19 +54,29 @@
                     {{ props.row.id }}
                 </b-table-column>
 
-                <b-table-column field="client.address" label="Адрес" sortable width="200">{{ props.row.client.address }}</b-table-column>
+                <b-table-column field="client.address" label="Адрес" sortable width="200">{{ props.row.client.address
+                    }}
+                </b-table-column>
 
                 <b-table-column field="client.private_face" label="Юр. лицо" sortable centered>
                     <span class="tag" :class="props.row.client.private_face ? 'is-primary' : 'is-warning'">{{  props.row.client.private_face ? 'Да' : 'Нет'}}</span>
                 </b-table-column>
 
                 <b-table-column field="created_at" label="Дата составления" sortable centered>
-                    <span class="tag is-success">{{ moment.utc(props.row.created_at).format('DD.MM.YYYY HH:mm') }}</span>
+                    <span class="tag is-success">{{ moment(props.row.created_at).format('DD.MM.YYYY HH:mm') }}</span>
                 </b-table-column>
 
-                <b-table-column :visible="showBtn"  class="is-middle" label="Действия" centered>
-                    <b-button type="is-info" icon-right="pen"
-                              @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
+                <b-table-column :visible="showBtn" label="Действия" centered>
+                    <div v-if="role === 'client_operator'">
+                        <b-button type="is-info" icon-right="pen"
+                                  @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
+                        <b-button type="is-danger" icon-right="delete-outline" @click="confirmDelete(), currentStatement = props.row.id"/>
+                    </div>
+                    <div v-else>
+                        <b-button v-if="btnType === 'start'" rounded @click="startWork(props.row)">Начать</b-button>
+                        <b-button v-else rounded @click="stopWork(props.row)">Завершить</b-button>
+                    </div>
+
                 </b-table-column>
             </template>
             <template slot="detail" slot-scope="props">
@@ -95,14 +106,14 @@
                                             expanded
                                             @select="option => selectUser(index, option)"
                                     >
-
                                         <template slot-scope="props">
                                             <div class="media">
                                                 <div class="media-content">
-                                                    {{ props.option.firstname }}
+                                                    {{ getFullName(props.option) }}
                                                 </div>
                                             </div>
                                         </template>
+                                        <template slot="empty">No results found</template>
                                     </b-autocomplete>
                                     <p class="control">
                                         <b-button type="is-danger"
@@ -136,20 +147,27 @@
   import UserList from './UserList';
   import EmptyData from './EmptyData';
 
-  import {search} from '../mixins';
+  import {search, fullName} from '../mixins';
 
   export default {
     components: {EmptyData, UserList},
-    mixins: [search],
+    mixins: [search, fullName],
     props: {
       data: {
         type: String,
-        default: ''
+        default: '',
       },
       showBtn: {
-        type: Boolean,
-        default: false
-      }
+        type: [String, Boolean],
+        default: false,
+      },
+      role: {
+        type: String,
+        default: 'service',
+      },
+      btnType: {
+        type: String,
+      },
     },
     data() {
       return {
@@ -166,7 +184,7 @@
         rows: [
           {
             value: null,
-          }]
+          }],
       };
     },
     methods: {
@@ -238,6 +256,57 @@
         });
         return this.unique(ids);
       },
+      startWork: function(arr) {
+        axios.post(`/api/works/start`, {
+          work_id: arr.work_id,
+          statement_id: arr.id,
+        }).then(({data}) => {
+          this.$buefy.toast.open({
+            message: data.status ? 'Выполнение заявления начато!' : 'Произошла ошибка',
+            type: data.status ? 'is-success' : 'is-danger',
+          });
+          this.json = _.filter(this.json, item => {
+            return item.id !== arr.id;
+          });
+        });
+      },
+      stopWork: function(arr) {
+        axios.post(`/api/works/stop`, {
+          work_id: arr.work_id,
+          statement_id: arr.id,
+        }).then(({data}) => {
+          this.$buefy.toast.open({
+            message: data.status ? 'Выполнение заявления завершено!' : 'Произошла ошибка',
+            type: data.status ? 'is-success' : 'is-danger',
+          });
+          this.json = _.filter(this.json, item => {
+            return item.id !== arr.id;
+          });
+        });
+      },
+      confirmDelete() {
+        this.$buefy.dialog.confirm({
+          title: 'Удалить заявление',
+          message: 'Вы действительно хотите <b>удалить</b> это заявление?',
+          confirmText: 'Удалить',
+          cancelText: 'Нет',
+          type: 'is-danger',
+          hasIcon: true,
+          onConfirm: () => this.deleteStatement(),
+        });
+      },
+      deleteStatement: function() {
+        axios.delete(`/api/statement/${this.currentStatement}`).then(({data}) => {
+          this.$buefy.toast.open({
+            message: data.message,
+            type: data.status ? 'is-success' : 'is-danger',
+          });
+          this.json = _.filter(this.json, item => {
+            return item.id !== this.currentStatement;
+          });
+          this.currentStatement = null;
+        });
+      }
     },
     computed: {
       createWorkBtn: function() {
@@ -251,7 +320,7 @@
           }
         });
         return status;
-      }
+      },
     },
   };
 </script>

@@ -7,7 +7,7 @@
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child">
-                            <statements data="{{ $data }}"></statements>
+                            @yield('component')
                         </article>
                     </div>
                 </div>
@@ -15,3 +15,4 @@
         </div>
     </div>
 @endsection
+

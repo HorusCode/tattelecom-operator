@@ -247,6 +247,18 @@ const $ = (function() {
       return this;
     },
 
+
+    changeClass(firstClass, secondClass) {
+      Array.from(this).forEach(el => {
+        if(el.classList.contains(firstClass)) {
+          el.className = el.className.replace(firstClass, secondClass);
+        } else {
+          el.className = el.className.replace(secondClass, firstClass);
+        }
+      });
+      return this;
+    },
+
     /**
      * Set the value property of all elements in the current
      * collection, or, if no value is specified, get the value
