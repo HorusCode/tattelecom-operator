@@ -68,9 +68,16 @@
 
                 <b-table-column :visible="showBtn" label="Действия" centered>
                     <div v-if="role === 'client_operator'">
-                        <b-button type="is-info" icon-right="pen"
-                                  @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
-                        <b-button type="is-danger" icon-right="delete-outline" @click="confirmDelete(), currentStatement = props.row.id"/>
+                        <b-tooltip label="Назначить сотрудника" type="is-info">
+                            <b-button type="is-info" icon-right="pen"
+                                      @click="isAddServiceManagerModal = true, currentStatement = props.row.id"/>
+                        </b-tooltip>
+                        <b-tooltip label="Удалить" type="is-danger">
+                            <b-button type="is-danger" icon-right="delete-outline"
+                                      @click="confirmDelete(), currentStatement = props.row.id"/>
+                        </b-tooltip>
+
+
                     </div>
                     <div v-else>
                         <b-button v-if="btnType === 'start'" rounded @click="startWork(props.row)">Начать</b-button>
@@ -306,7 +313,7 @@
           });
           this.currentStatement = null;
         });
-      }
+      },
     },
     computed: {
       createWorkBtn: function() {

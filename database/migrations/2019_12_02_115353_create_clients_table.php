@@ -21,7 +21,7 @@ class CreateClientsTable extends Migration
             $table->string('phone', 12);
             $table->integer('passport_number');
             $table->integer('passport_series');
-            $table->string('net_login');
+            $table->string('email');
             $table->string('address');
             $table->boolean('private_face');
             $table->timestamps();

@@ -1592,6 +1592,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -39802,28 +39809,52 @@ var render = function() {
                         ? _c(
                             "div",
                             [
-                              _c("b-button", {
-                                attrs: { type: "is-info", "icon-right": "pen" },
-                                on: {
-                                  click: function($event) {
-                                    ;(_vm.isAddServiceManagerModal = true),
-                                      (_vm.currentStatement = props.row.id)
+                              _c(
+                                "b-tooltip",
+                                {
+                                  attrs: {
+                                    label: "Назначить сотрудника",
+                                    type: "is-info"
                                   }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("b-button", {
-                                attrs: {
-                                  type: "is-danger",
-                                  "icon-right": "delete-outline"
                                 },
-                                on: {
-                                  click: function($event) {
-                                    _vm.confirmDelete(),
-                                      (_vm.currentStatement = props.row.id)
-                                  }
-                                }
-                              })
+                                [
+                                  _c("b-button", {
+                                    attrs: {
+                                      type: "is-info",
+                                      "icon-right": "pen"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        ;(_vm.isAddServiceManagerModal = true),
+                                          (_vm.currentStatement = props.row.id)
+                                      }
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-tooltip",
+                                {
+                                  attrs: { label: "Удалить", type: "is-danger" }
+                                },
+                                [
+                                  _c("b-button", {
+                                    attrs: {
+                                      type: "is-danger",
+                                      "icon-right": "delete-outline"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.confirmDelete(),
+                                          (_vm.currentStatement = props.row.id)
+                                      }
+                                    }
+                                  })
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
