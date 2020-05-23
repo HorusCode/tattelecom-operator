@@ -14,7 +14,8 @@ class CreateProblemsTable extends Migration
     public function up()
     {
         Schema::create('problems', function (Blueprint $table) {
-            $table->bigInteger('title');
+            $table->bigIncrements('id');
+            $table->string('name');
             $table->timestamps();
         });
     }

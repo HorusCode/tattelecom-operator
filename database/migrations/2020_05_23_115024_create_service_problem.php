@@ -14,16 +14,14 @@ class CreateServiceProblem extends Migration
     public function up()
     {
         Schema::create('service_problem', function (Blueprint $table) {
-            $table->bigIncrements('service_id')->unsigned();
-            $table->bigIncrements('problem_id')->unsigned();
+            $table->bigInteger('service_id')->index()->unsigned();
+            $table->bigInteger('problem_id')->index()->unsigned();
 
             $table->foreign('service_id')->references('id')->on('services')
                 ->onUpdate('cascade')->onDelete('cascade');
 
             $table->foreign('problem_id')->references('id')->on('problems')
                 ->onUpdate('cascade')->onDelete('cascade');
-
-            $table->index(['service_id', 'problem_id']);
         });
     }
 
