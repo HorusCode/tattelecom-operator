@@ -21,7 +21,7 @@ class ClientsTableSeeder extends Seeder
                 'phone' => "890612208{$i}",
                 'passport_number' => $faker->randomNumber('6'),
                 'passport_series' => $faker->randomNumber('4'),
-                'net_login' => Str::random('5'),
+                'email' => $faker->email,
                 'address' => $faker->address,
                 'private_face' => rand(0,1)
             ];

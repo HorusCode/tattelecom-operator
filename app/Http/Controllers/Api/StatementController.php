@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Statement;
+use App\Http\Resources\StatementResource;
+use App\Services\StatementService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 
 class StatementController extends Controller
 {
-    protected $statement;
 
-    public function __construct(Statement $statement)
+    private $role;
+    protected $stmt;
+
+    public function __construct(StatementService $service)
     {
-        $this->statement = $statement;
+        $this->stmt = $service;
+       // $this->role = Auth::user()->getRole();
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        return StatementResource::collection($this->stmt->get());
     }
 
     /**
@@ -34,15 +34,11 @@ class StatementController extends Controller
      */
     public function store(Request $request)
     {
-        $status = $this->statement->create([
-            'client_id' => $request->client_id,
-            'user_id' => Auth::id(),
-            'problem' => $request->problem
-        ]);
+        $status = $this->stmt->create($request->all());
 
         return response()->json([
             'status' => $status,
-            'message' => 'Заявление оформлено!'
+            'message' => $status ? 'Заявление оформлено!' : 'Не получилось создать заявление.'
         ]);
     }
 

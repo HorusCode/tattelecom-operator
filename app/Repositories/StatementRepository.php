@@ -4,26 +4,26 @@
 namespace App\Repositories;
 
 
-use App\Models\Client;
 use App\Models\Statement;
-use App\Models\User;
-use App\Repositories\Interfaces\StatementRepositoryInterface;
 
-class StatementRepository implements StatementRepositoryInterface
+class StatementRepository
 {
+    protected $statement;
 
-    public function all()
+    public function __construct()
     {
-        return Statement::all();
+        $this->statement = new Statement();
     }
 
-    public function getByUser(User $user)
+
+    public function getWithClient(bool $status = false)
     {
-        return Statement::where('user_id', $user->id)->get();
+        return $this->statement
+            ->whereStatus($status)
+            ->with('client')
+            ->get();
     }
 
-    public function getByClient(Client $client)
-    {
-        return Statement::where('client_id', $client->id)->get();
-    }
+
+
 }

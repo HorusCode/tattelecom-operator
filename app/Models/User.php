@@ -73,7 +73,12 @@ class User extends Authenticatable
 
     public function inRole(string $roleName)
     {
-        return $this->employee->name === $roleName;
+        return $this->getRole() === $roleName;
+    }
+
+    public function getRole()
+    {
+        return $this->employee->name;
     }
 
 }

@@ -1400,7 +1400,10 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref.data;
         _this.clients = [];
         data.forEach(function (res) {
-          return _this.clients.push(res);
+          return _this.clients.push({
+            id: res.id,
+            fullname: _this.getFullName(res)
+          });
         });
       })["catch"](function (error) {
         _this.clients = [];
@@ -1412,7 +1415,7 @@ __webpack_require__.r(__webpack_exports__);
     save: function save() {
       var _this2 = this;
 
-      axios.post("/api/statement", {
+      axios.post("/api/statements", {
         client_id: this.selected,
         problem: this.problem
       }).then(function (_ref2) {
@@ -1426,6 +1429,7 @@ __webpack_require__.r(__webpack_exports__);
         _.delay(function () {
           _this2.problem = '';
           _this2.selected = '';
+          _this2.clients = [];
         }, 300, 'later');
       });
     }
@@ -39463,7 +39467,7 @@ var render = function() {
               attrs: {
                 data: _vm.clients,
                 placeholder: "ФИО клиента",
-                field: "firstname",
+                field: "fullname",
                 loading: _vm.isFetching,
                 expanded: ""
               },
@@ -39482,7 +39486,7 @@ var render = function() {
                         _c("div", { staticClass: "media-content" }, [
                           _vm._v(
                             "\n                        " +
-                              _vm._s(_vm.getFullName(props.option)) +
+                              _vm._s(props.option.fullname) +
                               "\n                    "
                           )
                         ])

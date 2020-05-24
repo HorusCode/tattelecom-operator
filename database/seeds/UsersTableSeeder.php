@@ -21,6 +21,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'operator',
+                'email' => 'horusm99@gmail.com',
                 'employee_id' => 2,
                 'password' => Hash::make('1234')
             ],
@@ -32,6 +33,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'service',
+                'email' => 'horusm99@gmail.com',
                 'employee_id' => 3,
                 'password' => Hash::make('1234')
             ],
@@ -43,6 +45,7 @@ class UsersTableSeeder extends Seeder
                 'passport_number' => 123456,
                 'passport_series' => 1234,
                 'login' => 'call',
+                'email' => 'horusm99@gmail.com',
                 'employee_id' => 1,
                 'password' => Hash::make('1234')
             ]
@@ -58,6 +61,7 @@ class UsersTableSeeder extends Seeder
                 'passport_series' => "{$i}234",
                 'login' => "service{$i}",
                 'employee_id' => 3,
+                'email' => 'horusm99@gmail.com',
                 'password' => Hash::make('1234')
             ];
         }

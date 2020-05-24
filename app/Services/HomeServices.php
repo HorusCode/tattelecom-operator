@@ -25,7 +25,7 @@ class HomeServices
         return $this->statement
             ->whereStatus(true)
             ->with('client')
-            ->get()->toArray();
+            ->get();
     }
 
     public function getStatementForServiceOperator()

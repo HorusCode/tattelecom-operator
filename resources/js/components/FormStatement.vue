@@ -4,7 +4,7 @@
             <b-autocomplete
                     :data="clients"
                     placeholder="ФИО клиента"
-                    field="firstname"
+                    field="fullname"
                     :loading="isFetching"
                     @typing="getAsyncData"
                     expanded
@@ -13,7 +13,7 @@
                 <template slot-scope="props">
                     <div class="media">
                         <div class="media-content">
-                            {{ getFullName(props.option) }}
+                            {{ props.option.fullname }}
                         </div>
                     </div>
                 </template>
@@ -61,7 +61,10 @@
         this.isFetching = true;
         axios.get(`/api/users/search/client?text=${text}`).then(({data}) => {
           this.clients = [];
-          data.forEach((res) => this.clients.push(res));
+          data.forEach((res) => this.clients.push({
+            id: res.id,
+            fullname: this.getFullName(res)
+          }));
         }).catch((error) => {
           this.clients = [];
           throw error;
@@ -70,7 +73,7 @@
         });
       }, 500),
       save: function() {
-        axios.post(`/api/statement`, {
+        axios.post(`/api/statements`, {
           client_id: this.selected,
           problem: this.problem,
         }).then(({data}) => {
@@ -83,6 +86,7 @@
           _.delay(() => {
             this.problem = '';
             this.selected = '';
+            this.clients = [];
           }, 300, 'later');
         });
       },

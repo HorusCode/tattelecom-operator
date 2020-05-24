@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Problem;
+use App\Models\Service;
 use Illuminate\Database\Seeder;
 
-class ProblemsTableSeeder extends Seeder
+class ServicesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,17 +14,17 @@ class ProblemsTableSeeder extends Seeder
     {
         $data = [
             [
-                'name' => 'Перегорел трансформатор'
+                'title' => 'Протяжка кабеля'
             ],
             [
-                'name' => 'Замена кабеля'
+                'title' => 'Очистка дымохода'
             ],
             [
-                'name' => 'Установка счётчика'
+                'title' => 'Пересчёт денег'
             ]
         ];
         for($i = 0; $i < count($data); $i++) {
-            Problem::create($data[$i]);
+            Service::create($data[$i]);
         }
     }
 }
