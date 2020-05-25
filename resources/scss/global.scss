@@ -23,24 +23,26 @@
 @import "components/card";
 @import "components/nav-sidebar";
 //@import "components/input";
-@import "components/button";
+//@import "components/button";
 @import "components/list";
 @import "components/header";
 @import "components/content";
 @import "components/footer";
-@import "components/modal";
-@import "components/table";
-@import "components/divider";
-/*@import "components/dropdown";*/
-@import "components/preloader";
-@import "components/alert";
-@import "components/checkbox";
-@import "components/radio";
+//@import "components/modal";
+//@import "components/table";
+//@import "components/divider";
+//@import "components/dropdown";
+//@import "components/preloader";
+//@import "components/alert";
+//@import "components/checkbox";
+//@import "components/radio";
 @import "components/form";
-@import "components/select";
+//@import "components/select";
 
 // @import "../css/animate.css";
 
 @import "base/core";
 
+//@import "~bulma/bulma";
 @import "~buefy/dist/buefy.css";
+//@import "components/block-list";

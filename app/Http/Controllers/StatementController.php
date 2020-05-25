@@ -98,4 +98,9 @@ class StatementController extends Controller
     {
         return view('pages.form-statement')->with(['title' => 'Оформить заявление']);
     }
+
+    public function problem()
+    {
+        return view('pages.problem')->with(['title' => 'Оформить заявление']);
+    }
 }

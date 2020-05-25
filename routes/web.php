@@ -19,5 +19,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/active', 'StatementController@active')->name('active');
     Route::get('/ended', 'StatementController@ended')->name('ended');
     Route::get('/statement', 'StatementController@create')->name('statement');
+    Route::get('/problems', 'StatementController@problem')->name('problem');
 });
 

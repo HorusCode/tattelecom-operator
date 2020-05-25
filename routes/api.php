@@ -19,6 +19,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/works/start', 'WorkController@start');
     Route::post('/works/stop', 'WorkController@stop');
     Route::apiResource('/statements', 'Api\StatementController');
+    Route::apiResource('/problems', 'Api\ProblemController');
 });
 
 

@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="form--button-group">
-                    <button type="submit" class="btn btn-primary">{{ __('auth.signin') }}</button>
+                    <button type="submit" class="button is-primary is-rounded">{{ __('auth.signin') }}</button>
                 </div>
             </form>
         </div>

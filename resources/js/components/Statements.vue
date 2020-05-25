@@ -39,7 +39,6 @@
                 detail-key="id"
                 default-sort-direction="desc"
                 sort-icon="arrow-up"
-                show-detail-icon
                 sort-icon-size="is-small"
                 hoverable
         >
@@ -95,54 +94,7 @@
         </b-table>
         <b-modal :active.sync="isAddServiceManagerModal"
                  has-modal-card full-screen :can-cancel="false">
-            <div class="modal-card" style="width: auto">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Назначение сотрудника</p>
-                </header>
-                <section class="modal-card-body">
-                    <div class="columns">
-                        <div class="column is-half is-offset-one-quarter">
-                            <b-field v-for="(row, index) in rows" :key="index" :label="index + 1 + '. ФИО сотрудника'">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <b-autocomplete
-                                            :data="serviceUsers"
-                                            placeholder="ФИО сотрудника"
-                                            field="firstname"
-                                            :loading="isFetching"
-                                            @typing="getAsyncData"
-                                            expanded
-                                            @select="option => selectUser(index, option)"
-                                    >
-                                        <template slot-scope="props">
-                                            <div class="media">
-                                                <div class="media-content">
-                                                    {{ getFullName(props.option) }}
-                                                </div>
-                                            </div>
-                                        </template>
-                                        <template slot="empty">No results found</template>
-                                    </b-autocomplete>
-                                    <p class="control">
-                                        <b-button type="is-danger"
-                                                  outlined
-                                                  size="is-small"
-                                                  icon-right="close"
-                                                  @click="removeRow(index)"
-                                        />
-                                    </p>
-                                </div>
-                            </b-field>
-                            <b-button type="is-primary" class="is-center" @click="addRow">Добавить сотрудника</b-button>
-                        </div>
-                    </div>
-                </section>
-
-                <footer class="modal-card-foot">
-                    <button class="button" type="button" @click="isAddServiceManagerModal = false">Закрыть</button>
-                    <button class="button is-primary" :disabled="createWorkBtn" @click="sendData">Назначить</button>
-                </footer>
-            </div>
-
+            <statement-modal @success="showNotification" @close-modal="isAddServiceManagerModal = false" :current-id="currentStatement"/>
         </b-modal>
     </section>
 </template>
@@ -155,9 +107,10 @@
   import EmptyData from './EmptyData';
 
   import {search, fullName} from '../mixins';
+  import StatementModal from './StatementModal';
 
   export default {
-    components: {EmptyData, UserList},
+    components: {StatementModal, EmptyData, UserList},
     mixins: [search, fullName],
     props: {
       data: {
@@ -180,88 +133,32 @@
       return {
         json: JSON.parse(this.data),
         isAddServiceManagerModal: false,
-        isFetching: false,
         searchWord: '',
-        selectedUsers: [],
-        serviceUsers: [],
         isNotification: false,
         docsUrl: [],
         moment: moment,
-        currentStatement: null,
-        rows: [
-          {
-            value: null,
-          }],
+        currentStatement: undefined,
       };
     },
     methods: {
-      addRow: function() {
-        this.rows.push({
-          value: null,
-        });
-      },
-      removeRow: function(index) {
-        this.selectedUsers.splice(index, 1);
-        this.rows.splice(index, 1);
-      },
-      getAsyncData: debounce(function(text) {
-        if (text.length < 3) {
-          this.serviceUsers = [];
-          return;
-        }
-        this.isFetching = true;
-        axios.get(`/api/users/search/service?text=${text}`).then(({data}) => {
-          this.serviceUsers = [];
-          data.forEach((res) => this.serviceUsers.push(res));
-        }).catch((error) => {
-          this.serviceUsers = [];
-          throw error;
-        }).finally(() => {
-          this.isFetching = false;
-        });
-      }, 500),
-      selectUser(index, array) {
-        if (array) {
-          this.selectedUsers.push(array.id);
-          this.rows[index].value = array.id;
-          this.selectedUsers = this.unique(this.selectedUsers);
-        }
-      },
-      unique: function(arr) {
-        return Array.from(new Set(arr));
-      },
-      sendData: function() {
-        axios.post(`/api/works`, {
-          ids: this.userServiceIds(),
-          statement: this.currentStatement,
-        }).then(({data}) => {
-          this.$buefy.toast.open({
-            message: data.status ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
-            type: data.status ? 'is-success' : 'is-danger',
-          });
-          this.isNotification = data.status;
-          this.docsUrl = data.files;
+      showNotification: function(data) {
+        this.isAddServiceManagerModal = false;
 
-          this.json = _.filter(this.json, item => {
-            return item.id !== this.currentStatement;
-          });
-          _.delay(() => {
-            this.isAddServiceManagerModal = false;
-            this.selectedUsers = [];
-            this.serviceUsers = [];
-            this.currentStatement = null;
-            this.rows = [
-              {
-                value: null,
-              }];
-          }, 300, 'later');
+        this.$buefy.toast.open({
+          message: data.status ? 'Заявление на обслуживание оформлено!' : 'Произошла ошибка',
+          type: data.status ? 'is-success' : 'is-danger',
         });
-      },
-      userServiceIds: function() {
-        let ids = this.rows.map(obj => {
-          return obj.value;
+
+        this.isNotification = data.status;
+        this.docsUrl = data.files;
+
+        this.json = _.filter(this.json, item => {
+          return item.id !== this.currentStatement;
         });
-        return this.unique(ids);
+
+        _.delay(() => {
+          this.currentStatement = undefined;
+        }, 300, 'later');
       },
       startWork: function(arr) {
         axios.post(`/api/works/start`, {
@@ -313,20 +210,6 @@
           });
           this.currentStatement = null;
         });
-      },
-    },
-    computed: {
-      createWorkBtn: function() {
-        let status = false;
-        if (this.rows.length === 0 || this.selectedUsers.length === 0) {
-          status = true;
-        }
-        this.rows.forEach(obj => {
-          if (obj.value === null) {
-            status = true;
-          }
-        });
-        return status;
       },
     },
   };

@@ -40,6 +40,11 @@
                         <span class="mdi mdi-account-card-details-outline pos-left-null"></span>Оформить заявление
                     </a>
                 </li>
+                <li class="vertical-list__item">
+                    <a href="{{ route('problem') }}" aria-expanded="true" class="{{ $route === 'problem' ? 'active' : ''}}">
+                        <span class="mdi mdi-alert-octagon-outline pos-left-null"></span>Все неисправности
+                    </a>
+                </li>
             @endif
         </ul>
     </div>
