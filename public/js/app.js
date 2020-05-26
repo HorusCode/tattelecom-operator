@@ -1447,12 +1447,95 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'ProblemModal'
+  name: 'ProblemModal',
+  data: function data() {
+    return {
+      isFetching: false,
+      searchData: [],
+      selected: undefined,
+      newProblem: ''
+    };
+  },
+  methods: {
+    getAsyncData: Object(lodash__WEBPACK_IMPORTED_MODULE_0__["debounce"])(function (text) {
+      var _this = this;
+
+      if (text.length < 3) {
+        this.searchData = [];
+        return;
+      }
+
+      this.isFetching = true;
+      axios.get("/api/problems/search?text=".concat(text)).then(function (_ref) {
+        var data = _ref.data;
+        _this.searchData = data.data;
+      })["catch"](function (error) {
+        _this.searchData = [];
+        throw error;
+      })["finally"](function () {
+        _this.isFetching = false;
+      });
+    }, 500),
+    showAddNewProblem: function showAddNewProblem() {
+      this.$buefy.dialog.prompt({
+        message: "\u041D\u043E\u0432\u0430\u044F \u043D\u0435\u0438\u0441\u043F\u0440\u0430\u0432\u043D\u043E\u0441\u0442\u044C",
+        inputAttrs: {
+          placeholder: 'Неисправность',
+          value: this.newProblem
+        },
+        confirmText: 'Добавлено',
+        onConfirm: function onConfirm(value) {
+          console.log(value);
+          /*this.$refs.autocomplete.setSelected(value)*/
+        }
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -1467,6 +1550,10 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins */ "./resources/js/mixins.js");
+/* harmony import */ var _ProblemModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ProblemModal */ "./resources/js/components/ProblemModal.vue");
+//
+//
+//
 //
 //
 //
@@ -1537,14 +1624,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Problems',
+  components: {
+    ProblemModal: _ProblemModal__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   mixins: [_mixins__WEBPACK_IMPORTED_MODULE_0__["search"]],
   data: function data() {
     return {
       json: [],
       searchWord: '',
-      loading: true
+      loading: true,
+      showModal: false
     };
   },
   mounted: function mounted() {
@@ -39756,9 +39848,105 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", { staticClass: "modal-card" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "section",
+      { staticClass: "modal-card-body", staticStyle: { overflow: "visible" } },
+      [
+        _c(
+          "b-field",
+          { attrs: { label: "Клиент" } },
+          [
+            _c(
+              "b-autocomplete",
+              {
+                attrs: {
+                  data: _vm.searchData,
+                  placeholder: "Неисправность",
+                  field: "name",
+                  loading: _vm.isFetching,
+                  expanded: ""
+                },
+                on: {
+                  typing: _vm.getAsyncData,
+                  select: function(option) {
+                    return (_vm.selected = option.id)
+                  }
+                },
+                scopedSlots: _vm._u([
+                  {
+                    key: "default",
+                    fn: function(props) {
+                      return [
+                        _c("div", { staticClass: "media" }, [
+                          _c("div", { staticClass: "media-content" }, [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(props.option.name) +
+                                "\n                        "
+                            )
+                          ])
+                        ])
+                      ]
+                    }
+                  }
+                ]),
+                model: {
+                  value: _vm.newProblem,
+                  callback: function($$v) {
+                    _vm.newProblem = $$v
+                  },
+                  expression: "newProblem"
+                }
+              },
+              [
+                _c("template", { slot: "header" }, [
+                  _c("a", { on: { click: _vm.showAddNewProblem } }, [
+                    _c("span", [_vm._v(" Новая неисправность... ")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._v(" "),
+                _c("template", { slot: "empty" }, [_vm._v("Нет результатов")])
+              ],
+              2
+            )
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm._m(1)
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("header", { staticClass: "modal-card-head" }, [
+      _c("p", { staticClass: "modal-card-title" }, [
+        _vm._v("Добавление неисправности")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("footer", { staticClass: "modal-card-foot" }, [
+      _c("button", { staticClass: "button is-success" }, [
+        _vm._v("Save changes")
+      ]),
+      _vm._v(" "),
+      _c("button", { staticClass: "button" }, [_vm._v("Cancel")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -39798,6 +39986,20 @@ var render = function() {
             }
           })
         ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: { "has-modal-card": "", active: _vm.showModal },
+          on: {
+            "update:active": function($event) {
+              _vm.showModal = $event
+            }
+          }
+        },
+        [_c("problem-modal")],
         1
       ),
       _vm._v(" "),
@@ -39878,7 +40080,12 @@ var render = function() {
                                   {
                                     staticClass:
                                       "button btn-square is-small text-primary",
-                                    attrs: { role: "button" }
+                                    attrs: { role: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.showModal = true
+                                      }
+                                    }
                                   },
                                   [_c("i", { staticClass: "mdi mdi-plus" })]
                                 )
@@ -42045,17 +42252,26 @@ __webpack_require__.r(__webpack_exports__);
 window.onload = function () {
   var $verticalListTrigger = $('.vertical-list__trigger');
   var activeItems = $('.vertical-list__item .submenu .active').length > 0;
-  activeItems ? $verticalListTrigger.addClass('active') : '';
+
+  if (activeItems) {
+    $verticalListTrigger.addClass('active');
+    $verticalListTrigger.next().toggleClass('active');
+    $verticalListTrigger.find('.mdi-chevron-up').toggleClass('mdi-rotate-180');
+  }
+
   $verticalListTrigger.on('click', function () {
-    var subMenu = this.nextElementSibling;
+    this.nextElementSibling.classList.toggle('active');
     this.querySelector('.mdi-chevron-up').classList.toggle('mdi-rotate-180');
-    var arr = subMenu.clientHeight === subMenu.scrollHeight ? [subMenu.scrollHeight, 0] : [0, subMenu.scrollHeight];
-    Object(animejs__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    /*let arr =
+        subMenu.clientHeight === subMenu.scrollHeight
+            ? [subMenu.scrollHeight, 0]
+            : [0, subMenu.scrollHeight];
+    anime({
       targets: subMenu,
       height: arr,
       easing: 'easeOutQuad',
-      duration: 200
-    });
+      duration: 200,
+    });*/
   });
   $('#app').on('click', '.burger, .burger > span', function () {
     $('.burger').toggleClass('active');

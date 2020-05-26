@@ -5,12 +5,16 @@ window.onload = () => {
   let $verticalListTrigger = $('.vertical-list__trigger');
 
   let activeItems = $('.vertical-list__item .submenu .active').length > 0;
-  activeItems ? $verticalListTrigger.addClass('active') : '';
+  if(activeItems) {
+    $verticalListTrigger.addClass('active');
+    $verticalListTrigger.next().toggleClass('active');
+    $verticalListTrigger.find('.mdi-chevron-up').toggleClass('mdi-rotate-180');
+  }
 
   $verticalListTrigger.on('click', function() {
-    let subMenu = this.nextElementSibling;
+    this.nextElementSibling.classList.toggle('active');
     this.querySelector('.mdi-chevron-up').classList.toggle('mdi-rotate-180');
-    let arr =
+    /*let arr =
         subMenu.clientHeight === subMenu.scrollHeight
             ? [subMenu.scrollHeight, 0]
             : [0, subMenu.scrollHeight];
@@ -19,7 +23,7 @@ window.onload = () => {
       height: arr,
       easing: 'easeOutQuad',
       duration: 200,
-    });
+    });*/
   });
 
   $('#app').on('click', '.burger, .burger > span', function() {

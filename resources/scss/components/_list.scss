@@ -49,6 +49,10 @@
   transition: padding 300ms;
   padding: 0 .5rem;
   overflow: hidden;
+  height: 0;
+  &.active {
+    height: auto;
+  }
   &__item > a {
     display: block;
     color: #6c757d;

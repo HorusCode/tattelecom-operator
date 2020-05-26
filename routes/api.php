@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->group(function() {
     Route::get('/users/search/service', 'UserController@searchServiceUser');
     Route::get('/users/search/client', 'UserController@searchClient');
+    Route::get('/problems/search', 'Api\ProblemController@searchProblem');
     Route::post('/works', 'WorkController@store');
     Route::post('/works/start', 'WorkController@start');
     Route::post('/works/stop', 'WorkController@stop');

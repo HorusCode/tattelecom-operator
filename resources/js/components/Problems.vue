@@ -8,6 +8,9 @@
             >
             </b-input>
         </b-field>
+        <b-modal has-modal-card :active.sync="showModal">
+            <problem-modal></problem-modal>
+        </b-modal>
         <b-table
                 :data="filtered"
                 ref="table"
@@ -31,7 +34,7 @@
                         <span>{{ props.row.title }}</span>
                         <div>
                             <b-tooltip position="is-left" label="Добавить неисправность к услуге" multilined type="is-primary">
-                                <a role="button" class="button btn-square is-small text-primary">
+                                <a role="button" @click="showModal = true" class="button btn-square is-small text-primary">
                                     <i class="mdi mdi-plus"></i>
                                 </a>
                             </b-tooltip>
@@ -69,15 +72,18 @@
 
 <script>
   import {search} from '../mixins';
+  import ProblemModal from './ProblemModal';
 
   export default {
     name: 'Problems',
+    components: {ProblemModal},
     mixins: [search],
     data() {
       return {
         json: [],
         searchWord: '',
-        loading: true
+        loading: true,
+        showModal: false,
       };
     },
     mounted() {

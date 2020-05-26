@@ -2,21 +2,42 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Problem;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProblemController extends Controller
 {
+
+    protected $service;
+    protected $problem;
+
+    public function __construct(Service $service, Problem $problem)
+    {
+        $this->service = $service;
+        $this->problem= $problem;
+    }
+
+    public function searchProblem(Request $request)
+    {
+        $data = $this->problem
+            ->where("name", "LIKE", '%'.$request->text.'%')
+            ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $test = new Service();
-        return response()->json(['data' => $test->with('problems')->get()->toArray()]);
+        return response()->json(['data' => $this->service->with('problems')->get()->toArray()]);
     }
 
     /**
@@ -63,4 +84,6 @@ class ProblemController extends Controller
     {
         //
     }
+
+
 }

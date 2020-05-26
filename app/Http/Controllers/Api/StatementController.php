@@ -6,7 +6,7 @@ use App\Http\Resources\StatementResource;
 use App\Services\StatementService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Auth;
+
 
 class StatementController extends Controller
 {
