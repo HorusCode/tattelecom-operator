@@ -15,7 +15,8 @@ class ProblemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:problems|max:255'
+            'name' => 'required|unique:problems|max:255',
+            'ids*' => 'digits',
         ];
     }
 }

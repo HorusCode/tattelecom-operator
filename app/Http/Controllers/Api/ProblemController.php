@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\ProblemRequest;
 use App\Models\Problem;
-use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProblemController extends Controller
 {
-
-    protected $service;
+    /* TODO: Create Service, add Repository */
     protected $problem;
 
-    public function __construct(Service $service, Problem $problem)
+    public function __construct(Problem $problem)
     {
-        $this->service = $service;
-        $this->problem= $problem;
+        $this->problem = $problem;
     }
 
     public function searchProblem(Request $request)
     {
         $data = $this->problem
-            ->where("name", "LIKE", '%'.$request->text.'%')
+            ->where("name", "LIKE", '%' . $request->text . '%')
             ->get();
 
         return response()->json([
@@ -37,24 +35,27 @@ class ProblemController extends Controller
      */
     public function index()
     {
-        return response()->json(['data' => $this->service->with('problems')->get()->toArray()]);
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+
+    public function store(ProblemRequest $request)
     {
-        //
+        $data = $this->problem->create([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'status' => !empty($data),
+            'message' => $data ? 'Неисправность добавлена!' : 'Произошла ошибка',
+            'data' => $data
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -65,8 +66,8 @@ class ProblemController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -77,12 +78,16 @@ class ProblemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $status = $this->problem->destroy($id);
+        return response()->json([
+            'status' => $status,
+            'message' => 'Удаление произведено успешно!'
+        ]);
     }
 
 

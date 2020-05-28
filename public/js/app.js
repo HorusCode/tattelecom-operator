@@ -1490,6 +1490,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ProblemModal',
@@ -1497,13 +1513,61 @@ __webpack_require__.r(__webpack_exports__);
     return {
       isFetching: false,
       searchData: [],
-      selected: undefined,
-      newProblem: ''
+      selectedProblems: [],
+      newProblem: '',
+      rows: [{
+        id: undefined,
+        name: '',
+        selected: false
+      }]
     };
   },
+  computed: {
+    sendBtn: function sendBtn() {
+      var status = false;
+
+      if (this.rows.length !== this.selectedProblems.length || this.selectedProblems.length === 0) {
+        status = true;
+      }
+
+      return status;
+    }
+  },
   methods: {
-    getAsyncData: Object(lodash__WEBPACK_IMPORTED_MODULE_0__["debounce"])(function (text) {
+    addRow: function addRow() {
+      this.rows.push({
+        id: null,
+        name: ''
+      });
+    },
+    removeRow: function removeRow(index) {
       var _this = this;
+
+      this.selectedProblems = this.selectedProblems.filter(function (item) {
+        return item.id !== _this.rows[index].id;
+      });
+      this.rows.splice(index, 1);
+    },
+    selectProblem: function selectProblem(index, array) {
+      if (array) {
+        this.selectedProblems.push(array);
+        this.rows[index].id = array.id;
+        this.rows[index].selected = true;
+        this.selectedProblems = _.uniqBy(this.selectedProblems, 'id');
+      }
+
+      if (this.sendBtn) {
+        this.$buefy.notification.open({
+          duration: 5000,
+          message: "\u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043F\u043E\u043B\u0435\u0439 \u0431\u043E\u043B\u044C\u0448\u0435 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u044B\u0445 \u043D\u0435\u0438\u0441\u043F\u0440\u0430\u0432\u043D\u043E\u0441\u0442\u0435\u0439.\n                    <br>\u0412\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u0438\u043C\u0435\u044E\u0442\u0441\u044F \u0434\u0443\u0431\u043B\u0438\u043A\u0430\u0442\u044B \u0438\u043B\u0438 \u043F\u0443\u0441\u0442\u044B\u0435 \u043F\u043E\u043B\u044F",
+          position: 'is-top-left',
+          type: 'is-warning',
+          hasIcon: true
+        });
+      }
+    },
+    getAsyncData: Object(lodash__WEBPACK_IMPORTED_MODULE_0__["debounce"])(function (text) {
+      var _this2 = this;
 
       if (text.length < 3) {
         this.searchData = [];
@@ -1513,25 +1577,46 @@ __webpack_require__.r(__webpack_exports__);
       this.isFetching = true;
       axios.get("/api/problems/search?text=".concat(text)).then(function (_ref) {
         var data = _ref.data;
-        _this.searchData = data.data;
+        _this2.searchData = data.data;
       })["catch"](function (error) {
-        _this.searchData = [];
+        _this2.searchData = [];
         throw error;
       })["finally"](function () {
-        _this.isFetching = false;
+        _this2.isFetching = false;
       });
     }, 500),
-    showAddNewProblem: function showAddNewProblem() {
+    showAddNewProblem: function showAddNewProblem(inputval) {
+      var _this3 = this;
+
       this.$buefy.dialog.prompt({
         message: "\u041D\u043E\u0432\u0430\u044F \u043D\u0435\u0438\u0441\u043F\u0440\u0430\u0432\u043D\u043E\u0441\u0442\u044C",
         inputAttrs: {
           placeholder: 'Неисправность',
-          value: this.newProblem
+          value: inputval
         },
-        confirmText: 'Добавлено',
+        confirmText: 'Добавить',
         onConfirm: function onConfirm(value) {
-          console.log(value);
-          /*this.$refs.autocomplete.setSelected(value)*/
+          axios.post('api/problems', {
+            name: value
+          }).then(function (_ref2) {
+            var data = _ref2.data;
+
+            _this3.$buefy.toast.open({
+              message: data.message,
+              type: data.status ? 'is-success' : 'is-danger'
+            });
+
+            _this3.searchData.push(data.data);
+
+            _this3.$refs.autocomplete.setSelected(data.data);
+          })["catch"](function (_ref3) {
+            var response = _ref3.response;
+
+            _this3.$buefy.toast.open({
+              message: response.data.message,
+              type: 'is-danger'
+            });
+          });
         }
       });
     }
@@ -1623,6 +1708,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1636,24 +1733,69 @@ __webpack_require__.r(__webpack_exports__);
       json: [],
       searchWord: '',
       loading: true,
-      showModal: false
+      showModal: false,
+      selectedService: {
+        index: undefined,
+        id: undefined
+      },
+      selectedProblem: {
+        index: undefined,
+        id: undefined
+      }
     };
   },
   mounted: function mounted() {
     this.getData();
   },
   methods: {
-    getData: function getData() {
+    sendData: function sendData(arr) {
       var _this = this;
 
-      this.loading = true;
-      axios.get('/api/problems').then(function (_ref) {
+      var ids = _.map(arr, 'id');
+
+      axios.post('/api/service-problems', {
+        ids: ids,
+        current_id: this.selectedService.id
+      }).then(function (_ref) {
         var data = _ref.data;
-        _this.json = data.data;
+
+        _this.$buefy.toast.open({
+          type: 'is-success',
+          message: data.message
+        });
+
+        var problems = _this.json[_this.selectedService.index].problems;
+        problems = problems.concat(arr);
+        _this.json[_this.selectedService.index].problems = _.unionBy(problems, 'id');
+        _this.showModal = false;
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
+        console.log(response.data);
+      });
+    },
+    selectService: function selectService(index, id) {
+      this.selectedService = {
+        id: id,
+        index: index
+      };
+    },
+    selectProblem: function selectProblem(index, id) {
+      this.selectedProblem = {
+        index: index,
+        id: id
+      };
+    },
+    getData: function getData() {
+      var _this2 = this;
+
+      this.loading = true;
+      axios.get('/api/service-problems').then(function (_ref3) {
+        var data = _ref3.data;
+        _this2.json = data.data;
       })["catch"](function (error) {
         console.log(error);
       })["finally"](function () {
-        _this.loading = false;
+        _this2.loading = false;
       });
     },
     detail: function detail(row) {
@@ -1661,13 +1803,86 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.table.toggleDetails(row);
     },
     confirmDelete: function confirmDelete() {
+      var _this3 = this;
+
       this.$buefy.dialog.confirm({
         title: 'Удалить неисправность',
         message: 'Вы действительно хотите <b>удалить</b> эту неисправность у данной услуги?',
         confirmText: 'Удалить',
         cancelText: 'Нет',
+        type: 'is-warning',
+        hasIcon: true,
+        onConfirm: function onConfirm() {
+          return _this3.deleteProblem();
+        }
+      });
+    },
+    confirmTotalDelete: function confirmTotalDelete() {
+      var _this4 = this;
+
+      this.$buefy.dialog.confirm({
+        title: 'Полное удаление неисправности',
+        message: 'Вы действительно хотите <b>полностью удалить</b> эту неисправность из базы данных?',
+        confirmText: 'Удалить',
+        cancelText: 'Нет',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: function onConfirm() {
+          return _this4.deleteProblemTotal();
+        }
+      });
+      this.$buefy.notification.open({
+        duration: 5000,
+        message: "\u0412\u043D\u0438\u043C\u0430\u043D\u0438\u0435! \u041D\u0435\u0438\u0441\u043F\u0440\u0430\u0432\u043D\u043E\u0441\u0442\u044C \u0443\u0434\u0430\u043B\u0438\u0442\u0441\u044F \u0443 \u0432\u0441\u0435\u0445 \u0443\u0441\u043B\u0443\u0433",
+        position: 'is-bottom-left',
         type: 'is-danger',
         hasIcon: true
+      });
+    },
+    deleteProblem: function deleteProblem() {
+      var _this5 = this;
+
+      axios["delete"]("/api/service-problems/".concat(this.selectedService.id, "?problem_id=").concat(this.selectedProblem.id)).then(function (_ref4) {
+        var data = _ref4.data;
+
+        _this5.$buefy.toast.open({
+          type: 'is-success',
+          message: data.message
+        });
+
+        _this5.json[_this5.selectedService.index].problems.splice(_this5.selectedProblem.index, 1);
+
+        if (_this5.json[_this5.selectedService.index].problems.length === 0) {
+          _this5.detail(_this5.json[_this5.selectedService.index]);
+        }
+      })["catch"](function (_ref5) {
+        var response = _ref5.response;
+        console.log(response);
+      });
+    },
+    deleteProblemTotal: function deleteProblemTotal() {
+      var _this6 = this;
+
+      axios["delete"]("/api/problems/".concat(this.selectedProblem.id)).then(function (_ref6) {
+        var data = _ref6.data;
+
+        _this6.$buefy.toast.open({
+          type: 'is-success',
+          message: data.message
+        });
+
+        _this6.json.forEach(function (row) {
+          row.problems = row.problems.filter(function (item) {
+            return item.id !== _this6.selectedProblem.id;
+          });
+
+          if (row.problems.length === 0) {
+            _this6.detail(row);
+          }
+        });
+      })["catch"](function (_ref7) {
+        var response = _ref7.response;
+        console.log(response);
       });
     }
   }
@@ -39853,74 +40068,169 @@ var render = function() {
     _vm._v(" "),
     _c(
       "section",
-      { staticClass: "modal-card-body", staticStyle: { overflow: "visible" } },
+      { staticClass: "modal-card-body" },
       [
+        _vm._v("\n        Выбранные неисрпавности:\n        "),
         _c(
-          "b-field",
-          { attrs: { label: "Клиент" } },
-          [
-            _c(
-              "b-autocomplete",
-              {
-                attrs: {
-                  data: _vm.searchData,
-                  placeholder: "Неисправность",
-                  field: "name",
-                  loading: _vm.isFetching,
-                  expanded: ""
-                },
-                on: {
-                  typing: _vm.getAsyncData,
-                  select: function(option) {
-                    return (_vm.selected = option.id)
-                  }
-                },
-                scopedSlots: _vm._u([
-                  {
-                    key: "default",
-                    fn: function(props) {
-                      return [
-                        _c("div", { staticClass: "media" }, [
-                          _c("div", { staticClass: "media-content" }, [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(props.option.name) +
-                                "\n                        "
-                            )
-                          ])
-                        ])
-                      ]
-                    }
-                  }
-                ]),
-                model: {
-                  value: _vm.newProblem,
-                  callback: function($$v) {
-                    _vm.newProblem = $$v
-                  },
-                  expression: "newProblem"
-                }
-              },
+          "b-taglist",
+          _vm._l(_vm.selectedProblems, function(problem) {
+            return _c(
+              "b-tag",
+              { key: problem.id, attrs: { type: "is-info" } },
               [
-                _c("template", { slot: "header" }, [
-                  _c("a", { on: { click: _vm.showAddNewProblem } }, [
-                    _c("span", [_vm._v(" Новая неисправность... ")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _vm._v(" "),
-                _c("template", { slot: "empty" }, [_vm._v("Нет результатов")])
-              ],
-              2
+                _vm._v(
+                  "\n                " + _vm._s(problem.name) + "\n            "
+                )
+              ]
             )
-          ],
+          }),
           1
+        ),
+        _vm._v(" "),
+        _vm._l(_vm.rows, function(row, index) {
+          return _c(
+            "b-field",
+            { key: index, attrs: { label: index + 1 + ". Неисправность" } },
+            [
+              _c(
+                "b-field",
+                { attrs: { type: { "is-danger": !row.selected } } },
+                [
+                  _c(
+                    "b-autocomplete",
+                    {
+                      ref: "autocomplete",
+                      refInFor: true,
+                      attrs: {
+                        data: _vm.searchData,
+                        placeholder: "Неисправность",
+                        field: "name",
+                        loading: _vm.isFetching,
+                        expanded: ""
+                      },
+                      on: {
+                        typing: _vm.getAsyncData,
+                        select: function(option) {
+                          return _vm.selectProblem(index, option)
+                        }
+                      },
+                      scopedSlots: _vm._u(
+                        [
+                          {
+                            key: "default",
+                            fn: function(props) {
+                              return [
+                                _c("div", { staticClass: "media" }, [
+                                  _c("div", { staticClass: "media-content" }, [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(props.option.name) +
+                                        "\n                            "
+                                    )
+                                  ])
+                                ])
+                              ]
+                            }
+                          }
+                        ],
+                        null,
+                        true
+                      ),
+                      model: {
+                        value: row.name,
+                        callback: function($$v) {
+                          _vm.$set(row, "name", $$v)
+                        },
+                        expression: "row.name"
+                      }
+                    },
+                    [
+                      _c("template", { slot: "header" }, [
+                        _c(
+                          "a",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.showAddNewProblem(row.name)
+                              }
+                            }
+                          },
+                          [_c("span", [_vm._v(" Новая неисправность... ")])]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm._v(" "),
+                      _c("template", { slot: "empty" }, [
+                        _vm._v("Нет результатов")
+                      ])
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "p",
+                    { staticClass: "control" },
+                    [
+                      _c("b-button", {
+                        attrs: { type: "is-danger", "icon-right": "close" },
+                        on: {
+                          click: function($event) {
+                            return _vm.removeRow(index)
+                          }
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        }),
+        _vm._v(" "),
+        _c(
+          "b-button",
+          {
+            staticClass: "is-center",
+            attrs: { type: "is-primary" },
+            on: { click: _vm.addRow }
+          },
+          [_vm._v("Добавить неисправность")]
         )
       ],
-      1
+      2
     ),
     _vm._v(" "),
-    _vm._m(1)
+    _c("footer", { staticClass: "modal-card-foot" }, [
+      _c(
+        "button",
+        {
+          staticClass: "button is-success",
+          attrs: { disabled: _vm.sendBtn },
+          on: {
+            click: function($event) {
+              return _vm.$emit("send", _vm.selectedProblems)
+            }
+          }
+        },
+        [_vm._v("Добавить")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          on: {
+            click: function($event) {
+              return _vm.$parent.close()
+            }
+          }
+        },
+        [_vm._v("Закрыть")]
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -39932,18 +40242,6 @@ var staticRenderFns = [
       _c("p", { staticClass: "modal-card-title" }, [
         _vm._v("Добавление неисправности")
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("footer", { staticClass: "modal-card-foot" }, [
-      _c("button", { staticClass: "button is-success" }, [
-        _vm._v("Save changes")
-      ]),
-      _vm._v(" "),
-      _c("button", { staticClass: "button" }, [_vm._v("Cancel")])
     ])
   }
 ]
@@ -39992,14 +40290,18 @@ var render = function() {
       _c(
         "b-modal",
         {
-          attrs: { "has-modal-card": "", active: _vm.showModal },
+          attrs: {
+            "has-modal-card": "",
+            "can-cancel": false,
+            active: _vm.showModal
+          },
           on: {
             "update:active": function($event) {
               _vm.showModal = $event
             }
           }
         },
-        [_c("problem-modal")],
+        [_c("problem-modal", { on: { send: _vm.sendData } })],
         1
       ),
       _vm._v(" "),
@@ -40083,7 +40385,11 @@ var render = function() {
                                     attrs: { role: "button" },
                                     on: {
                                       click: function($event) {
-                                        _vm.showModal = true
+                                        ;(_vm.showModal = true),
+                                          _vm.selectService(
+                                            props.index,
+                                            props.row.id
+                                          )
                                       }
                                     }
                                   },
@@ -40110,7 +40416,7 @@ var render = function() {
                     _c(
                       "ul",
                       { staticClass: "list m-0" },
-                      _vm._l(props.row.problems, function(item) {
+                      _vm._l(props.row.problems, function(item, i) {
                         return _c(
                           "li",
                           {
@@ -40129,6 +40435,41 @@ var render = function() {
                                   {
                                     attrs: {
                                       label: "Удалить",
+                                      type: "is-warning"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "a",
+                                      {
+                                        staticClass:
+                                          "button btn-square is-small is-warning",
+                                        attrs: { role: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.confirmDelete(),
+                                              _vm.selectProblem(i, item.id),
+                                              _vm.selectService(
+                                                props.index,
+                                                props.row.id
+                                              )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "mdi mdi-delete-outline"
+                                        })
+                                      ]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "b-tooltip",
+                                  {
+                                    attrs: {
+                                      label: "Полное удаление",
                                       type: "is-danger"
                                     }
                                   },
@@ -40139,11 +40480,21 @@ var render = function() {
                                         staticClass:
                                           "button btn-square is-small is-danger",
                                         attrs: { role: "button" },
-                                        on: { click: _vm.confirmDelete }
+                                        on: {
+                                          click: function($event) {
+                                            _vm.confirmTotalDelete(),
+                                              _vm.selectProblem(i, item.id),
+                                              _vm.selectService(
+                                                props.index,
+                                                props.row.id
+                                              )
+                                          }
+                                        }
                                       },
                                       [
                                         _c("i", {
-                                          staticClass: "mdi mdi-delete-outline"
+                                          staticClass:
+                                            "mdi mdi-delete-alert-outline"
                                         })
                                       ]
                                     )
@@ -40284,7 +40635,7 @@ var render = function() {
                           [
                             _vm._v(" "),
                             _c("template", { slot: "empty" }, [
-                              _vm._v("No results found")
+                              _vm._v("Нет результатов")
                             ])
                           ],
                           2

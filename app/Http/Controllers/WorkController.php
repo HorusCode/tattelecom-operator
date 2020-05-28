@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\WorkRequest;
+use App\Http\Requests\IDsRequest;
 use App\Models\Statement;
 use App\Models\User;
 use App\Models\Work;
@@ -24,7 +24,7 @@ class WorkController extends Controller
         $this->statement = $statement;
     }
 
-    public function store(WorkRequest $request)
+    public function store(IDsRequest $request)
     {
         $data = [];
         foreach ($request->ids as $id) {

@@ -25,7 +25,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template slot="empty">No results found</template>
+                                <template slot="empty">Нет результатов</template>
                             </b-autocomplete>
                             <p class="control">
                                 <b-button type="is-danger"

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WorkRequest extends FormRequest
+class IDsRequest extends FormRequest
 {
 
 
@@ -17,7 +17,7 @@ class WorkRequest extends FormRequest
     {
         return [
             'ids*' => 'required|digits',
-            'statement' => 'required'
+            'current_id' => 'required'
         ];
     }
 }

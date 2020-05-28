@@ -82,7 +82,6 @@
             type: data.status ? 'is-success' : 'is-danger',
           });
 
-
           _.delay(() => {
             this.problem = '';
             this.selected = '';
