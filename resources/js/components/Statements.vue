@@ -130,6 +130,7 @@
       },
     },
     data() {
+      console.log(JSON.parse(this.data));
       return {
         json: JSON.parse(this.data),
         isAddServiceManagerModal: false,

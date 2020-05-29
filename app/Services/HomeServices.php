@@ -4,9 +4,11 @@
 namespace App\Services;
 
 
+use App\Http\Resources\WorkResource;
 use App\Models\Statement;
 use App\Models\Work;
-use Illuminate\Support\Facades\Auth;
+use Auth;
+use DB;
 
 class HomeServices
 {
@@ -20,23 +22,29 @@ class HomeServices
     }
 
 
+    public function getStatement(string $for)
+    {
+        $for = str_replace("_", '', ucwords($for, "_"));
+        return $this->{'getStatementFor'.$for}();
+    }
+
+
     public function getStatementForClientOperator()
     {
         return $this->statement
             ->whereStatus(true)
-            ->with('client')
+            ->with('client.services')
             ->get();
     }
 
-    public function getStatementForServiceOperator()
+    public function getStatementForService()
     {
-        $data = $this->work
+        /*$data = $this->work
             ->whereStatus(0)
             ->whereServiceUserId(Auth::id())
             ->with('operatorUser')
             ->get()
-            ->groupBy('statement_id')
-        ;
+            ->groupBy('statement_id');
         $arr = [];
         $arrKey = 0;
         foreach ($data as $i => $datum) {
@@ -57,7 +65,20 @@ class HomeServices
                 'updated_at' => $work->updated_at,
             ];
             $arrKey++;
-        }
+        }*/
+
+       /* $arr = DB::table('works')
+            ->where('works.status', false)
+            ->where('service_user_id', auth()->id())
+            ->join('statements', function ($join) {
+                $join->on('works.statement_id','=', 'statements.id')
+                    ->where('statements.status', false);
+            })
+            ->rightJoin('clients', 'statements.client_id', '=', 'clients.id')
+            ->rightJoin('users', 'statements.user_id', '=', 'users.id')
+            ->select(['works.id', 'works.created_at', 'works.status', 'works.statement_id', 'statements'])
+            ->get();*/
+        $arr = WorkResource::collection($this->work->whereStatus(0)->whereServiceUserId(Auth::id())->get());
         return $arr;
     }
 

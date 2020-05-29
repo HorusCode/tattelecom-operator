@@ -31,7 +31,9 @@ class StatementController extends Controller
     public function inactive()
     {
         $title = '';
-        switch (Auth::user()->employee->name) {
+
+
+        /*switch (Auth::user()->employee->name) {
             case 'client_operator':
                 $data = $this->homeServices->getStatementForClientOperator();
                 $title = 'Новые заявления';
@@ -40,8 +42,8 @@ class StatementController extends Controller
                 $data = $this->homeServices->getStatementForServiceOperator();
                 $title = 'Новые работы';
                 break;
-        }
-        // $arr = $this->homeServices->getStatementFlatArray($data);
+        }*/
+        $data = $this->homeServices->getStatement(Auth::user()->employee->name);
         return view('pages.statement')->with([
             'data' => json_encode($data),
             'title' => $title,

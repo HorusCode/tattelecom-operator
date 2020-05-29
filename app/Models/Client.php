@@ -18,6 +18,10 @@ class Client extends Model
         'address'
     ];
 
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'client_service');
+    }
 
     public function statements()
     {

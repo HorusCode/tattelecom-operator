@@ -133,9 +133,14 @@
       sendData: function() {
         axios.post(`/api/works`, {
           ids: this.userServiceIds(),
-          statement: this.currentId,
+          current_id: this.currentId,
         }).then(({data}) => {
           this.$emit('success', data);
+        }).catch(({response}) => {
+          this.$buefy.toast.open({
+            type: 'is-danger',
+            message: response.data.message
+          });
         });
       },
     },

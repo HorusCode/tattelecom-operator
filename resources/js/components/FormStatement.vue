@@ -8,7 +8,7 @@
                     :loading="isFetching"
                     @typing="getAsyncData"
                     expanded
-                    @select="option => selected = option.id"
+                    @select="option => selectClient(option)"
             >
                 <template slot-scope="props">
                     <div class="media">
@@ -20,6 +20,47 @@
                 <template slot="empty">Нет результатов</template>
             </b-autocomplete>
         </b-field>
+        <b-field label="Выбранные услуги">
+            <b-table
+                    :data="clientServices"
+                    ref="table"
+                    detailed
+                    hoverable
+                    custom-detail-row
+                    :show-detail-icon="false"
+                    detail-key="title">
+                <template slot-scope="props">
+                    <b-table-column field="detail" width="50">
+                        <a v-if="props.row.problems.length > 0" role="button" @click="detail(props.row)">
+                            <i class="mdi mdi-chevron-right" :class="{'mdi-rotate-90': props.row.detailed}"/>
+                        </a>
+                    </b-table-column>
+                    <b-table-column
+                            field="title"
+                            label="Название услуги"
+                            sortable>
+                        {{ props.row.title }}
+                    </b-table-column>
+                </template>
+
+                <template slot="detail" slot-scope="props">
+                    <tr class="detail">
+                        <td colspan="2">
+                            <ul class="list m-0">
+                                <li class="list-item d-flex justify-content-between" v-for="item in props.row.problems"
+                                    :key="item.name">
+                                    <span> {{ item.name }}</span>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </template>
+                <template slot="empty">
+                    <empty-data/>
+                </template>
+            </b-table>
+        </b-field>
+
         <b-field label="Проблема">
             <b-input type="textarea"
                      minlength="10"
@@ -40,9 +81,11 @@
   import {fullName} from '../mixins';
 
   import {debounce} from 'lodash';
+  import EmptyData from './EmptyData';
 
   export default {
     name: 'FormStatement',
+    components: {EmptyData},
     mixins: [fullName],
     data() {
       return {
@@ -50,9 +93,18 @@
         clients: [],
         problem: '',
         selected: '',
+        clientServices: [],
       };
     },
     methods: {
+      selectClient: function(arr) {
+        this.selected = arr.id;
+        this.clientServices = arr.services;
+      },
+      detail: function(row) {
+        row.detailed = !row.detailed;
+        this.$refs.table.toggleDetails(row);
+      },
       getAsyncData: debounce(function(text) {
         if (text.length < 3) {
           this.clients = [];
@@ -63,7 +115,8 @@
           this.clients = [];
           data.forEach((res) => this.clients.push({
             id: res.id,
-            fullname: this.getFullName(res)
+            fullname: this.getFullName(res),
+            services: res.services
           }));
         }).catch((error) => {
           this.clients = [];

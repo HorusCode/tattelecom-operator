@@ -41,6 +41,7 @@ class UserController extends Controller
     public function searchClient(Request $request)
     {
         $data = $this->client
+            ->with('services.problems')
             ->whereRaw("CONCAT_WS(' ', `lastname`,`firstname`,`patronymic`) LIKE ?", '%'.$request->text.'%')
             ->get();
         $data = $data->map(function ($item) {
@@ -49,6 +50,7 @@ class UserController extends Controller
                 'firstname' => $item->firstname,
                 'lastname' => $item->lastname,
                 'patronymic' => $item->patronymic,
+                'services' => $item->services,
             ];
         });
         return response()->json($data);

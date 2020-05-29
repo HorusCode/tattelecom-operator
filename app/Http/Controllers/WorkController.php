@@ -30,13 +30,13 @@ class WorkController extends Controller
         foreach ($request->ids as $id) {
             $data[] = [
                 'service_user_id' => $id,
-                'statement_id' => $request->statement,
+                'statement_id' => $request->current_id,
                 'operator_user_id' => Auth::id(),
                 'created_at' => date('Y-m-d H-i-s'),
                 'updated_at' => date('Y-m-d H-i-s')
             ];
         }
-        $stmt = $this->statement->find($request->statement);
+        $stmt = $this->statement->find($request->current_id);
         $stmt->update(['status' => false]);
         $created = $this->work->insert($data);
         $user = $stmt->client;
