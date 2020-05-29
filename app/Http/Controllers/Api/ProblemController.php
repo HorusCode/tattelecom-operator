@@ -66,13 +66,20 @@ class ProblemController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param ProblemRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(ProblemRequest $request, $id)
     {
-        //
+        $this->problem->where('id', $id)->update([
+            'name' => $request->name
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Неисправность переименована!',
+            'data' => $this->problem->find($id)
+        ]);
     }
 
     /**

@@ -1720,6 +1720,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1764,9 +1765,8 @@ __webpack_require__.r(__webpack_exports__);
           message: data.message
         });
 
-        var problems = _this.json[_this.selectedService.index].problems;
-        problems = problems.concat(arr);
-        _this.json[_this.selectedService.index].problems = _.unionBy(problems, 'id');
+        _this.unionProblems(arr);
+
         _this.showModal = false;
       })["catch"](function (_ref2) {
         var response = _ref2.response;
@@ -1883,6 +1883,60 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (_ref7) {
         var response = _ref7.response;
         console.log(response);
+      });
+    },
+    editProblem: function editProblem(text) {
+      var _this7 = this;
+
+      this.$buefy.dialog.prompt({
+        message: "\u0418\u0437\u043C\u0435\u043D\u0438\u0442\u044C \u043D\u0435\u0438\u0441\u043F\u0440\u0430\u0432\u043D\u043E\u0441\u0442\u044C: <b>".concat(text, "</b>"),
+        inputAttrs: {
+          type: 'text',
+          placeholder: 'Новое значание...',
+          value: text
+        },
+        confirmText: 'Send',
+        trapFocus: true,
+        closeOnConfirm: false,
+        onConfirm: function onConfirm(value) {
+          _this7.updateProblem(value);
+        }
+      });
+    },
+    unionProblems: function unionProblems(arr) {
+      var problems = this.json[this.selectedService.index].problems;
+      problems = problems.concat(arr);
+      this.json[this.selectedService.index].problems = _.unionBy(problems, 'id');
+    },
+    updateProblem: function updateProblem(text) {
+      var _this8 = this;
+
+      axios.post("/api/problems/".concat(this.selectedProblem.id), {
+        name: text,
+        _method: 'PUT'
+      }).then(function (_ref8) {
+        var data = _ref8.data;
+
+        _this8.$buefy.toast.open({
+          type: 'is-success',
+          message: data.message
+        });
+
+        _this8.json.forEach(function (row) {
+          var index = row.problems.findIndex(function (item) {
+            return item.id === data.data.id;
+          });
+          if (row.problems[index]) row.problems[index].name = data.data.name;
+        });
+
+        _this8.$nextTick();
+      })["catch"](function (_ref9) {
+        var response = _ref9.response;
+
+        _this8.$buefy.toast.open({
+          type: 'is-danger',
+          message: response.data.message
+        });
       });
     }
   }
@@ -40515,7 +40569,13 @@ var render = function() {
                                       {
                                         staticClass:
                                           "button btn-square is-small is-info",
-                                        attrs: { role: "button" }
+                                        attrs: { role: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.editProblem(item.name),
+                                              _vm.selectProblem(i, item.id)
+                                          }
+                                        }
                                       },
                                       [
                                         _c("i", {

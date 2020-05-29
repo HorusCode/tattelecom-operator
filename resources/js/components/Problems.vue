@@ -68,7 +68,8 @@
                                         </a>
                                     </b-tooltip>
                                     <b-tooltip label="Переименовать" type="is-info">
-                                        <a role="button" class="button btn-square is-small is-info">
+                                        <a role="button" class="button btn-square is-small is-info"
+                                           @click="editProblem(item.name), selectProblem(i, item.id)">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
                                     </b-tooltip>
@@ -120,9 +121,7 @@
             type: 'is-success',
             message: data.message,
           });
-          let problems = this.json[this.selectedService.index].problems;
-          problems = problems.concat(arr);
-          this.json[this.selectedService.index].problems = _.unionBy(problems, 'id');
+          this.unionProblems(arr);
           this.showModal = false;
         }).catch(({response}) => {
           console.log(response.data);
@@ -217,6 +216,49 @@
               console.log(response);
             });
       },
+      editProblem: function(text) {
+        this.$buefy.dialog.prompt({
+          message: `Изменить неисправность: <b>${text}</b>`,
+          inputAttrs: {
+            type: 'text',
+            placeholder: 'Новое значание...',
+            value: text,
+          },
+          confirmText: 'Send',
+          trapFocus: true,
+          closeOnConfirm: false,
+          onConfirm: (value) => {
+            this.updateProblem(value);
+          },
+        });
+      },
+      unionProblems: function(arr) {
+        let problems = this.json[this.selectedService.index].problems;
+        problems = problems.concat(arr);
+        this.json[this.selectedService.index].problems = _.unionBy(problems, 'id');
+      },
+      updateProblem: function(text) {
+        axios.post(`/api/problems/${this.selectedProblem.id}`, {
+          name: text,
+          _method: 'PUT'
+        }).then(({data}) => {
+          this.$buefy.toast.open({
+            type: 'is-success',
+            message: data.message,
+          });
+
+          this.json.forEach(row => {
+            let index = row.problems.findIndex(item => item.id === data.data.id);
+            if(row.problems[index]) row.problems[index].name = data.data.name;
+          });
+          this.$nextTick();
+        }).catch(({response}) => {
+          this.$buefy.toast.open({
+            type: 'is-danger',
+            message: response.data.message,
+          });
+        })
+      }
     },
 
   };
