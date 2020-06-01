@@ -2073,11 +2073,11 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixins__WEBPACK_IMPORTED_MODULE_1__["fullName"]],
   data: function data() {
     return {
-      selectedUsers: [],
       serviceUsers: [],
       isFetching: false,
       rows: [{
-        value: null
+        id: undefined,
+        isUniq: true
       }]
     };
   },
@@ -2085,12 +2085,12 @@ __webpack_require__.r(__webpack_exports__);
     createWorkBtn: function createWorkBtn() {
       var status = false;
 
-      if (this.rows.length === 0 || this.selectedUsers.length === 0) {
+      if (this.rows.length === 0) {
         status = true;
       }
 
       this.rows.forEach(function (obj) {
-        if (obj.value === null) {
+        if (obj.id === undefined) {
           status = true;
         }
       });
@@ -2100,11 +2100,12 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addRow: function addRow() {
       this.rows.push({
-        value: null
+        id: undefined,
+        isUniq: true
       });
     },
     removeRow: function removeRow(index) {
-      this.selectedUsers.splice(index, 1);
+      this.isUniqRows();
       this.rows.splice(index, 1);
     },
     getAsyncData: Object(lodash__WEBPACK_IMPORTED_MODULE_0__["debounce"])(function (text) {
@@ -2134,9 +2135,20 @@ __webpack_require__.r(__webpack_exports__);
     }, 500),
     selectUser: function selectUser(index, array) {
       if (array) {
-        this.selectedUsers.push(array.id);
-        this.rows[index].value = array.id;
-        this.selectedUsers = this.unique(this.selectedUsers);
+        this.rows[index].id = array.id;
+        this.rows[index].isUniq = true;
+        this.isUniqRows();
+      }
+    },
+    isUniqRows: function isUniqRows() {
+      if (this.rows.length > 1) {
+        var lookup = this.rows.reduce(function (a, e) {
+          a[e.id] = ++a[e.id] || 0;
+          return a;
+        }, {});
+        this.rows.forEach(function (row) {
+          row.isUniq = lookup[row.id] === 0;
+        });
       }
     },
     unique: function unique(arr) {
@@ -2144,7 +2156,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     userServiceIds: function userServiceIds() {
       var ids = this.rows.map(function (obj) {
-        return obj.value;
+        return obj.id;
       });
       return this.unique(ids);
     },
@@ -2437,7 +2449,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins */ "./resources/js/mixins.js");
 /* harmony import */ var _EmptyData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmptyData */ "./resources/js/components/EmptyData.vue");
-//
 //
 //
 //
@@ -40891,6 +40902,7 @@ var render = function() {
                   [
                     _c(
                       "b-field",
+                      { attrs: { type: { "is-warning": !row.isUniq } } },
                       [
                         _c(
                           "b-autocomplete",
@@ -41215,7 +41227,9 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        _vm._s(props.row.client.address) + "\n            "
+                        "\n                " +
+                          _vm._s(props.row.client.address) +
+                          "\n            "
                       )
                     ]
                   ),
@@ -41373,7 +41387,7 @@ var render = function() {
             {
               key: "detail",
               fn: function(props) {
-                return [_c("user-list", { attrs: { data: props } })]
+                return [_c("user-list", { attrs: { data: props.row } })]
               }
             }
           ])
@@ -41446,18 +41460,10 @@ var render = function() {
     _c("div", { staticClass: "media-content" }, [
       _c("div", { staticClass: "content" }, [
         _c("header", { staticClass: "heading" }, [
-          _c("h4", [
-            _vm._v(
-              _vm._s(_vm.data.row.client.lastname) +
-                " " +
-                _vm._s(_vm.data.row.client.firstname) +
-                "\n                    " +
-                _vm._s(_vm.data.row.client.patronymic)
-            )
-          ]),
+          _c("h4", [_vm._v(_vm._s(_vm.getFullName(_vm.data.client)))]),
           _vm._v(" "),
           _c("h5", { staticClass: "has-text-weight-normal" }, [
-            _vm._v("Почта: " + _vm._s(_vm.data.row.client.email))
+            _vm._v("Почта: " + _vm._s(_vm.data.client.email))
           ])
         ]),
         _vm._v(" "),
@@ -41468,29 +41474,29 @@ var render = function() {
             _c("ul", { staticClass: "list m-0" }, [
               _c("li", { staticClass: "list-item" }, [
                 _vm._v("\n                            Адрес: "),
-                _c("strong", [_vm._v(_vm._s(_vm.data.row.client.address))])
+                _c("strong", [_vm._v(_vm._s(_vm.data.client.address))])
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "list-item" }, [
                 _vm._v("\n                            Паспорт: "),
                 _c("strong", [
                   _vm._v(
-                    _vm._s(_vm.data.row.client.passport_number) +
+                    _vm._s(_vm.data.client.passport_number) +
                       "\n                            " +
-                      _vm._s(_vm.data.row.client.passport_series)
+                      _vm._s(_vm.data.client.passport_series)
                   )
                 ])
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "list-item" }, [
                 _vm._v("\n                            Телефон: "),
-                _c("strong", [_vm._v(_vm._s(_vm.data.row.client.phone))])
+                _c("strong", [_vm._v(_vm._s(_vm.data.client.phone))])
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "list-item" }, [
                 _vm._v("\n                            Что случилось: "),
                 _c("p", { staticClass: "has-text-weight-bold" }, [
-                  _vm._v(_vm._s(_vm.data.row.problem))
+                  _vm._v(_vm._s(_vm.data.statement.problem))
                 ])
               ])
             ])
@@ -41499,11 +41505,11 @@ var render = function() {
           _c("div", { staticClass: "mb-3" }, [
             _c("h6", [_vm._v("Услуги:")]),
             _vm._v(" "),
-            _vm.data.row.client.services.length > 0
+            _vm.data.client.services.length > 0
               ? _c(
                   "ul",
                   { staticClass: "list m-0" },
-                  _vm._l(_vm.data.row.client.services, function(service) {
+                  _vm._l(_vm.data.client.services, function(service) {
                     return _c(
                       "li",
                       {
@@ -41535,8 +41541,8 @@ var render = function() {
                 {
                   name: "show",
                   rawName: "v-show",
-                  value: _vm.data.row.hasOwnProperty("service"),
-                  expression: "data.row.hasOwnProperty('service')"
+                  value: _vm.data.hasOwnProperty("service_user"),
+                  expression: "data.hasOwnProperty('service_user')"
                 }
               ],
               staticClass: "mb-3"
@@ -41544,24 +41550,15 @@ var render = function() {
             [
               _c("h6", [_vm._v("Назначены на работу:")]),
               _vm._v(" "),
-              _c(
-                "ul",
-                { staticClass: "list m-0" },
-                _vm._l(_vm.data.row.service, function(service) {
-                  return _c("li", { staticClass: "list-item" }, [
-                    _c("span", { staticClass: "is-block" }, [
-                      _vm._v("ФИО: "),
-                      _c("strong", [_vm._v(_vm._s(_vm.getFullName(service)))])
-                    ]),
-                    _vm._v(" "),
-                    _c("span", { staticClass: "is-block" }, [
-                      _vm._v("Телефон: "),
-                      _c("strong", [_vm._v(_vm._s(service.phone))])
-                    ])
-                  ])
-                }),
-                0
-              )
+              _c("ul", { staticClass: "list m-0" }, [
+                _c("li", { staticClass: "list-item" }, [
+                  _c("span", { staticClass: "is-block" }, [
+                    _vm._v(_vm._s(_vm.data.service_user))
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              ])
             ]
           )
         ])
@@ -41578,6 +41575,15 @@ var staticRenderFns = [
       _c("span", { staticClass: "avatar" }, [
         _c("span", { staticClass: "mdi mdi-account-circle-outline" })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "is-block" }, [
+      _vm._v("Телефон: "),
+      _c("strong")
     ])
   }
 ]

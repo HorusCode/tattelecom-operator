@@ -21,11 +21,22 @@ class HomeServices
         $this->statement = $statement;
     }
 
+    private function pascalCase(string $str)
+    {
+        return str_replace("_", '', ucwords($str, "_"));
+    }
+
 
     public function getStatement(string $for)
     {
-        $for = str_replace("_", '', ucwords($for, "_"));
-        return $this->{'getStatementFor'.$for}();
+        $for = $this->pascalCase($for);
+        return $this->{'getStatementFor' . $for}();
+    }
+
+    public function getActiveWork(string $for)
+    {
+        $for = $this->pascalCase($for);
+        return $this->{'getActiveWorkFor' . $for}();
     }
 
 
@@ -39,52 +50,13 @@ class HomeServices
 
     public function getStatementForService()
     {
-        /*$data = $this->work
-            ->whereStatus(0)
-            ->whereServiceUserId(Auth::id())
-            ->with('operatorUser')
-            ->get()
-            ->groupBy('statement_id');
-        $arr = [];
-        $arrKey = 0;
-        foreach ($data as $i => $datum) {
-            $stmt = $this->statement->whereStatus(false)->find($i);
-            if ($stmt == null) {
-                continue;
-            }
-            $client = $stmt->client->toArray();
-            $work = $datum->first();
-            $arr[$arrKey] = [
-                'id' => $i,
-                'problem' => $stmt->problem,
-                'status' => $stmt->status,
-                'work_id' => $work->id,
-                'client' => $client,
-                'operator_fullname' => $work->operatorUser->lastname . ' ' . $work->operatorUser->firstname . ' ' . $work->operatorUser->patronymic,
-                'created_at' => $work->created_at,
-                'updated_at' => $work->updated_at,
-            ];
-            $arrKey++;
-        }*/
 
-       /* $arr = DB::table('works')
-            ->where('works.status', false)
-            ->where('service_user_id', auth()->id())
-            ->join('statements', function ($join) {
-                $join->on('works.statement_id','=', 'statements.id')
-                    ->where('statements.status', false);
-            })
-            ->rightJoin('clients', 'statements.client_id', '=', 'clients.id')
-            ->rightJoin('users', 'statements.user_id', '=', 'users.id')
-            ->select(['works.id', 'works.created_at', 'works.status', 'works.statement_id', 'statements'])
-            ->get();*/
-        $arr = WorkResource::collection($this->work->whereStatus(0)->whereServiceUserId(Auth::id())->get());
-        return $arr;
+        return WorkResource::collection($this->work->whereStatus(0)->whereServiceUserId(Auth::id())->get());
     }
 
     public function getActiveWorkForServiceOperator()
     {
-        $data = $this->work
+        /*$data = $this->work
             ->whereStatus(1)
             ->whereServiceUserId(Auth::id())
             ->get()
@@ -114,14 +86,15 @@ class HomeServices
                 'updated_at' => $work->updated_at,
             ];
             $arrKey++;
-        }
-        return $arr;
+        }*/
+
+        return WorkResource::collection($this->work->whereStatus(0)->whereServiceUserId(Auth::id())->get());
     }
 
 
     public function getActiveWorkForClientOperator()
     {
-        $data = $this->work
+        /*$data = $this->work
             ->whereStatus(1)
             ->orWhere('status',0)
             ->get()
@@ -151,8 +124,9 @@ class HomeServices
                 'updated_at' => $work->updated_at,
             ];
             $arrKey++;
-        }
-        return $arr;
+        }*/
+
+        return WorkResource::collection($this->work->whereStatus(1)->orWhere('status', 0)->get());
     }
 
     public function getEndedWorkForServiceOperator()
@@ -161,13 +135,12 @@ class HomeServices
             ->whereStatus(2)
             ->whereServiceUserId(Auth::id())
             ->get()
-            ->groupBy('statement_id')
-        ;
+            ->groupBy('statement_id');
         $arr = [];
         $arrKey = 0;
         foreach ($data as $i => $datum) {
             $stmt = $this->statement->whereStatus(false)->find($i);
-            if($stmt == null) {
+            if ($stmt == null) {
                 continue;
             }
             $client = $stmt->client;
@@ -179,7 +152,7 @@ class HomeServices
             $arr[$arrKey] = [
                 'id' => $i,
                 'problem' => $stmt->problem,
-                'work_id' =>  $work->id,
+                'work_id' => $work->id,
                 'client' => $client,
                 'service' => $service,
                 'created_at' => $work->created_at,
@@ -192,7 +165,7 @@ class HomeServices
 
     public function getEndedWorkForClientOperator()
     {
-        $data = $this->work
+        /*$data = $this->work
             ->whereStatus(2)
             ->get()
             ->groupBy('statement_id')
@@ -219,26 +192,8 @@ class HomeServices
                 'updated_at' => $work->updated_at
             ];
             $arrKey++;
-        }
-        return $arr;
-    }
-
-
-    public function getStatementFlatArray($data)
-    {
-        $arr = [];
-        foreach ($data as $k => $datum) {
-            foreach ($datum as $key => $value) {
-                if ($key == 'client') {
-                    foreach ($value as $i => $d) {
-                        $arr[$k]["client_$i"] = $d;
-                    }
-                } else {
-                    $arr[$k][$key] = $value;
-                }
-            }
-        }
-        return $arr;
+        }*/
+        return WorkResource::collection($this->work->whereStatus(2)->get());
     }
 
 

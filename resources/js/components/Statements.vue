@@ -53,8 +53,8 @@
                     {{ props.row.id }}
                 </b-table-column>
 
-                <b-table-column field="client.address" label="Адрес" sortable width="200">{{ props.row.client.address
-                    }}
+                <b-table-column field="client.address" label="Адрес" sortable width="200">
+                    {{ props.row.client.address }}
                 </b-table-column>
 
                 <b-table-column field="client.private_face" label="Юр. лицо" sortable centered>
@@ -82,11 +82,10 @@
                         <b-button v-if="btnType === 'start'" rounded @click="startWork(props.row)">Начать</b-button>
                         <b-button v-else rounded @click="stopWork(props.row)">Завершить</b-button>
                     </div>
-
                 </b-table-column>
             </template>
             <template slot="detail" slot-scope="props">
-                <user-list :data="props"/>
+                <user-list :data="props.row"/>
             </template>
             <template slot="empty">
                 <empty-data/>
@@ -94,7 +93,8 @@
         </b-table>
         <b-modal :active.sync="isAddServiceManagerModal"
                  has-modal-card full-screen :can-cancel="false">
-            <statement-modal @success="showNotification" @close-modal="isAddServiceManagerModal = false" :current-id="currentStatement"/>
+            <statement-modal @success="showNotification" @close-modal="isAddServiceManagerModal = false"
+                             :current-id="currentStatement"/>
         </b-modal>
     </section>
 </template>

@@ -8,7 +8,7 @@
                 <div class="column is-half is-offset-one-quarter">
                     <b-field v-for="(row, index) in rows" :key="index"
                              :label="index + 1 + '. ФИО сотрудника'">
-                        <b-field>
+                        <b-field :type="{'is-warning': !row.isUniq}">
                             <b-autocomplete
                                     :data="serviceUsers"
                                     placeholder="ФИО сотрудника"
@@ -61,12 +61,12 @@
     mixins: [fullName],
     data() {
       return {
-        selectedUsers: [],
         serviceUsers: [],
         isFetching: false,
         rows: [
           {
-            value: null,
+            id: undefined,
+            isUniq: true,
           },
         ],
       };
@@ -74,11 +74,11 @@
     computed: {
       createWorkBtn: function() {
         let status = false;
-        if (this.rows.length === 0 || this.selectedUsers.length === 0) {
+        if (this.rows.length === 0) {
           status = true;
         }
         this.rows.forEach(obj => {
-          if (obj.value === null) {
+          if (obj.id === undefined) {
             status = true;
           }
         });
@@ -88,11 +88,12 @@
     methods: {
       addRow: function() {
         this.rows.push({
-          value: null,
+          id: undefined,
+          isUniq: true,
         });
       },
       removeRow: function(index) {
-        this.selectedUsers.splice(index, 1);
+        this.isUniqRows();
         this.rows.splice(index, 1);
       },
       getAsyncData: debounce(function(text) {
@@ -105,7 +106,7 @@
           this.serviceUsers = [];
           data.forEach((res) => this.serviceUsers.push({
             id: res.id,
-            fullname: this.getFullName(res)
+            fullname: this.getFullName(res),
           }));
         }).catch((error) => {
           this.serviceUsers = [];
@@ -116,9 +117,21 @@
       }, 500),
       selectUser(index, array) {
         if (array) {
-          this.selectedUsers.push(array.id);
-          this.rows[index].value = array.id;
-          this.selectedUsers = this.unique(this.selectedUsers);
+          this.rows[index].id = array.id;
+          this.rows[index].isUniq = true;
+
+          this.isUniqRows();
+        }
+      },
+      isUniqRows: function() {
+        if (this.rows.length > 1) {
+          const lookup = this.rows.reduce((a, e) => {
+            a[e.id] = ++a[e.id] || 0;
+            return a;
+          }, {});
+          this.rows.forEach((row) => {
+            row.isUniq = lookup[row.id] === 0;
+          });
         }
       },
       unique: function(arr) {
@@ -126,7 +139,7 @@
       },
       userServiceIds: function() {
         let ids = this.rows.map(obj => {
-          return obj.value;
+          return obj.id;
         });
         return this.unique(ids);
       },
@@ -139,7 +152,7 @@
         }).catch(({response}) => {
           this.$buefy.toast.open({
             type: 'is-danger',
-            message: response.data.message
+            message: response.data.message,
           });
         });
       },

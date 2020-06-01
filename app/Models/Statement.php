@@ -29,4 +29,9 @@ class Statement extends Model
         return $this->hasMany(Work::class);
     }
 
+    public function serviceUsers()
+    {
+        return $this->belongsToMany(User::class, 'works', 'statement_id', 'service_user_id');
+    }
+
 }

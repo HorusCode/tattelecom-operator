@@ -17,12 +17,13 @@ class WorkResource extends JsonResource
         return [
             'id' => $this->id,
             'statement_id' => $this->statement_id,
-            'status' => $this->status,
+            'work_status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'service_user' => $this->serviceUser,
+            'service_user' =>  $this->serviceUser,
             'operator_user' => $this->operatorUser,
-            'statement' => StatementResource::make($this->statement)
+            'statement' => StatementResource::make($this->statement),
+            'client' => $this->statement->client()->with('services')->first()
         ];
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Contracts\Support\Renderable;
 class StatementController extends Controller
 {
     protected $homeServices;
-
+    protected $role;
     /**
      * Create a new controller instance.
      *
@@ -20,7 +20,11 @@ class StatementController extends Controller
     public function __construct(HomeServices $homeServices)
     {
         $this->homeServices = $homeServices;
-        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->role = Auth::user()->getRole();
+            return $next($request);
+        });
+
     }
 
     /**
@@ -30,23 +34,11 @@ class StatementController extends Controller
      */
     public function inactive()
     {
-        $title = '';
 
-
-        /*switch (Auth::user()->employee->name) {
-            case 'client_operator':
-                $data = $this->homeServices->getStatementForClientOperator();
-                $title = 'Новые заявления';
-                break;
-            case 'service':
-                $data = $this->homeServices->getStatementForServiceOperator();
-                $title = 'Новые работы';
-                break;
-        }*/
-        $data = $this->homeServices->getStatement(Auth::user()->employee->name);
+        $data = $this->homeServices->getStatement($this->role);
         return view('pages.statement')->with([
             'data' => json_encode($data),
-            'title' => $title,
+            'title' => $this->role == 'service' ? 'Новые заявления' : 'Новые работы',
             'showBtn' => 'true',
             'btnType' => 'start'
         ]);
@@ -54,25 +46,12 @@ class StatementController extends Controller
 
     public function active() //TODO: Create Resource class
     {
-        $title = '';
-        $arr = [];
-        switch (Auth::user()->employee->name) {
-            case 'client_operator':
-                $arr = $this->homeServices->getActiveWorkForClientOperator();
-                $title = 'Активные заявления';
-                $showBtn = 'false';
-                break;
-            case 'service':
-                $arr = $this->homeServices->getActiveWorkForServiceOperator();
-                $title = 'Активные работы';
-                $showBtn = 'true';
-                break;
-        }
+        $arr = $this->homeServices->getActiveWork($this->role);
 
         return view('pages.statement')->with([
             'data' => json_encode($arr),
-            'title'=> $title,
-            'showBtn' => $showBtn,
+            'title'=> $this->role == 'service' ? 'Активные заявления' : 'Активные работы',
+            'showBtn' => $this->role == 'service' ? 'true' : 'false',
             'btnType' => 'stop'
         ]);
     }
@@ -94,15 +73,5 @@ class StatementController extends Controller
         }
 
         return view('pages.statement')->with(['data' => json_encode($arr), 'title'=> $title]);
-    }
-
-    public function create()
-    {
-        return view('pages.form-statement')->with(['title' => 'Оформить заявление']);
-    }
-
-    public function problem()
-    {
-        return view('pages.problem')->with(['title' => 'Оформить заявление']);
     }
 }
