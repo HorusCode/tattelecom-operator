@@ -54,9 +54,9 @@ class User extends Authenticatable
         return $this->hasMany(Work::class, 'operator_user_id');
     }
 
-    public function statementsService()
+    public function workService()
     {
-        return $this->belongsToMany(Statement::class, 'works', 'service_user_id', 'statement_id');
+        return $this->hasMany(Work::class, 'service_user_id');
     }
 
     public function setApiToken()

@@ -24,7 +24,7 @@
                             @select="option => selectProblem(index, option)"
                     >
                         <template slot="header">
-                            <a @click="showAddNewProblem(row.name)">
+                            <a @click="showAddNewProblem(row.name, index)">
                                 <span> Новая неисправность... </span>
                             </a>
                         </template>
@@ -130,7 +130,7 @@
           this.isFetching = false;
         });
       }, 500),
-      showAddNewProblem: function(inputval) {
+      showAddNewProblem: function(inputval, inputIndex) {
         this.$buefy.dialog.prompt({
           message: `Новая неисправность`,
           inputAttrs: {
@@ -138,6 +138,7 @@
             value: inputval,
           },
           confirmText: 'Добавить',
+          cancelText: 'Выход',
           onConfirm: (value) => {
             axios.post('api/problems', {
               name: value,
@@ -147,7 +148,8 @@
                 type: data.status ? 'is-success' : 'is-danger',
               });
               this.searchData.push(data.data);
-              this.$refs.autocomplete.setSelected(data.data);
+              this.$refs.autocomplete[inputIndex].setSelected(data.data);
+              this.selectProblem(inputIndex, data.data);
             }).catch(({response}) => {
               this.$buefy.toast.open({
                 message: response.data.message,

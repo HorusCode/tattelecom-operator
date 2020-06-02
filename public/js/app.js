@@ -1641,7 +1641,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.isFetching = false;
       });
     }, 500),
-    showAddNewProblem: function showAddNewProblem(inputval) {
+    showAddNewProblem: function showAddNewProblem(inputval, inputIndex) {
       var _this3 = this;
 
       this.$buefy.dialog.prompt({
@@ -1651,6 +1651,7 @@ __webpack_require__.r(__webpack_exports__);
           value: inputval
         },
         confirmText: 'Добавить',
+        cancelText: 'Выход',
         onConfirm: function onConfirm(value) {
           axios.post('api/problems', {
             name: value
@@ -1664,7 +1665,9 @@ __webpack_require__.r(__webpack_exports__);
 
             _this3.searchData.push(data.data);
 
-            _this3.$refs.autocomplete.setSelected(data.data);
+            _this3.$refs.autocomplete[inputIndex].setSelected(data.data);
+
+            _this3.selectProblem(inputIndex, data.data);
           })["catch"](function (_ref3) {
             var response = _ref3.response;
 
@@ -2302,6 +2305,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2367,8 +2371,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       axios.post("/api/works/start", {
-        work_id: arr.work_id,
-        statement_id: arr.id
+        work_id: arr.id,
+        statement_id: arr.statement_id
       }).then(function (_ref) {
         var data = _ref.data;
 
@@ -2386,8 +2390,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       axios.post("/api/works/stop", {
-        work_id: arr.work_id,
-        statement_id: arr.id
+        work_id: arr.id,
+        statement_id: arr.statement_id
       }).then(function (_ref2) {
         var data = _ref2.data;
 
@@ -2449,6 +2453,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins */ "./resources/js/mixins.js");
 /* harmony import */ var _EmptyData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmptyData */ "./resources/js/components/EmptyData.vue");
+//
+//
 //
 //
 //
@@ -40459,7 +40465,7 @@ var render = function() {
                           {
                             on: {
                               click: function($event) {
-                                return _vm.showAddNewProblem(row.name)
+                                return _vm.showAddNewProblem(row.name, index)
                               }
                             }
                           },
@@ -41174,24 +41180,30 @@ var render = function() {
                       }
                     },
                     [
-                      _c(
-                        "span",
-                        {
-                          staticClass: "tag",
-                          class: props.row.work_status
-                            ? "is-success"
-                            : "is-danger"
-                        },
-                        [
-                          _vm._v(
-                            _vm._s(
-                              props.row.work_status
-                                ? "В процессе"
-                                : "Простаивает"
-                            )
+                      props.row.hasOwnProperty("statement") &&
+                      !props.row.statement.status &&
+                      props.row.work_status < 2
+                        ? _c(
+                            "span",
+                            {
+                              staticClass: "tag",
+                              class: props.row.work_status
+                                ? "is-warning"
+                                : "is-danger"
+                            },
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  props.row.work_status
+                                    ? "В процессе"
+                                    : "Простаивает"
+                                )
+                              )
+                            ]
                           )
-                        ]
-                      )
+                        : _c("span", { staticClass: "tag is-success" }, [
+                            _vm._v("Завершён")
+                          ])
                     ]
                   ),
                   _vm._v(" "),
@@ -41276,8 +41288,9 @@ var render = function() {
                       _c("span", { staticClass: "tag is-success" }, [
                         _vm._v(
                           _vm._s(
-                            _vm
-                              .moment(props.row.created_at)
+                            _vm.moment
+                              .utc(props.row.updated_at)
+                              .local()
                               .format("DD.MM.YYYY HH:mm")
                           )
                         )
@@ -41494,10 +41507,16 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "list-item" }, [
-                _vm._v("\n                            Что случилось: "),
-                _c("p", { staticClass: "has-text-weight-bold" }, [
-                  _vm._v(_vm._s(_vm.data.statement.problem))
-                ])
+                _vm._v(
+                  "\n                            Что случилось:\n                            "
+                ),
+                _vm.data.hasOwnProperty("statement")
+                  ? _c("p", { staticClass: "has-text-weight-bold" }, [
+                      _vm._v(_vm._s(_vm.data.statement.problem))
+                    ])
+                  : _c("p", { staticClass: "has-text-weight-bold" }, [
+                      _vm._v(_vm._s(_vm.data.problem))
+                    ])
               ])
             ])
           ]),
@@ -41519,7 +41538,7 @@ var render = function() {
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(service.name) +
+                            _vm._s(service.title) +
                             "\n                        "
                         )
                       ]
@@ -41550,15 +41569,23 @@ var render = function() {
             [
               _c("h6", [_vm._v("Назначены на работу:")]),
               _vm._v(" "),
-              _c("ul", { staticClass: "list m-0" }, [
-                _c("li", { staticClass: "list-item" }, [
-                  _c("span", { staticClass: "is-block" }, [
-                    _vm._v(_vm._s(_vm.data.service_user))
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(1)
-                ])
-              ])
+              _c(
+                "ul",
+                { staticClass: "list m-0" },
+                _vm._l(_vm.data.service_user, function(service) {
+                  return _c("li", { staticClass: "list-item" }, [
+                    _c("span", { staticClass: "is-block" }, [
+                      _vm._v(_vm._s(_vm.getFullName(service)))
+                    ]),
+                    _vm._v(" "),
+                    _c("span", { staticClass: "is-block" }, [
+                      _vm._v("Телефон: "),
+                      _c("strong", [_vm._v(_vm._s(service.phone))])
+                    ])
+                  ])
+                }),
+                0
+              )
             ]
           )
         ])
@@ -41575,15 +41602,6 @@ var staticRenderFns = [
       _c("span", { staticClass: "avatar" }, [
         _c("span", { staticClass: "mdi mdi-account-circle-outline" })
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "is-block" }, [
-      _vm._v("Телефон: "),
-      _c("strong")
     ])
   }
 ]

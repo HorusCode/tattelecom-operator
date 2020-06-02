@@ -26,7 +26,9 @@
                                 Телефон: <strong>{{data.client.phone}}</strong>
                             </li>
                             <li class="list-item">
-                                Что случилось: <p class="has-text-weight-bold">{{data.statement.problem}}</p>
+                                Что случилось:
+                                <p class="has-text-weight-bold" v-if="data.hasOwnProperty('statement')">{{data.statement.problem}}</p>
+                               <p class="has-text-weight-bold" v-else>{{data.problem}}</p>
                             </li>
                         </ul>
                     </div>
@@ -35,7 +37,7 @@
                         <h6>Услуги:</h6>
                         <ul class="list m-0" v-if="data.client.services.length > 0">
                             <li class="list-item" v-for="service in data.client.services" :key="'service-'+service.id">
-                                {{ service.name }}
+                                {{ service.title }}
                             </li>
                         </ul>
                         <div v-else class="box">
@@ -46,9 +48,9 @@
                     <div v-show="data.hasOwnProperty('service_user')" class="mb-3">
                         <h6>Назначены на работу:</h6>
                         <ul class="list m-0">
-                            <li class="list-item">
-                                <span class="is-block">{{data.service_user}}</span>
-                                <span class="is-block">Телефон: <strong></strong></span>
+                            <li class="list-item" v-for="service in data.service_user">
+                                <span class="is-block">{{getFullName(service)}}</span>
+                                <span class="is-block">Телефон: <strong>{{service.phone}}</strong></span>
                             </li>
                         </ul>
                     </div>

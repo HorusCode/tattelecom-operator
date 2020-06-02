@@ -46,7 +46,8 @@
             <template slot-scope="props">
                 <b-table-column centered :visible="props.row.hasOwnProperty('work_status')" field="work_status"
                                 label="Статус" width="40" sortable>
-                    <span class="tag" :class="props.row.work_status ? 'is-success' : 'is-danger'">{{  props.row.work_status ? 'В процессе' : 'Простаивает'}}</span>
+                    <span v-if="props.row.hasOwnProperty('statement') && !props.row.statement.status && props.row.work_status < 2" class="tag" :class="props.row.work_status ? 'is-warning' : 'is-danger'">{{  props.row.work_status ? 'В процессе' : 'Простаивает' }}</span>
+                    <span v-else class="tag is-success">Завершён</span>
                 </b-table-column>
 
                 <b-table-column field="id" label="ID" width="40" sortable centered>
@@ -62,7 +63,7 @@
                 </b-table-column>
 
                 <b-table-column field="created_at" label="Дата составления" sortable centered>
-                    <span class="tag is-success">{{ moment(props.row.created_at).format('DD.MM.YYYY HH:mm') }}</span>
+                    <span class="tag is-success">{{ moment.utc(props.row.updated_at).local().format('DD.MM.YYYY HH:mm') }}</span>
                 </b-table-column>
 
                 <b-table-column :visible="showBtn" label="Действия" centered>
@@ -163,8 +164,8 @@
       },
       startWork: function(arr) {
         axios.post(`/api/works/start`, {
-          work_id: arr.work_id,
-          statement_id: arr.id,
+          work_id: arr.id,
+          statement_id: arr.statement_id,
         }).then(({data}) => {
           this.$buefy.toast.open({
             message: data.status ? 'Выполнение заявления начато!' : 'Произошла ошибка',
@@ -177,8 +178,8 @@
       },
       stopWork: function(arr) {
         axios.post(`/api/works/stop`, {
-          work_id: arr.work_id,
-          statement_id: arr.id,
+          work_id: arr.id,
+          statement_id: arr.statement_id,
         }).then(({data}) => {
           this.$buefy.toast.open({
             message: data.status ? 'Выполнение заявления завершено!' : 'Произошла ошибка',

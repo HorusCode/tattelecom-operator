@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $title)
+{{--@section('title', $title)--}}
 @section('content')
     <div class="app-container">
         <div class="app-container__content tile is-ancestor">
