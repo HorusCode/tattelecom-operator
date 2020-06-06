@@ -50,6 +50,11 @@
                         <span class="mdi mdi-account-badge-horizontal-outline pos-left-null"></span>Абоненты
                     </a>
                 </li>
+                <li class="vertical-list__item">
+                    <a href="{{ route('statistics') }}" aria-expanded="true" class="{{ $route === 'statistics' ? 'active' : ''}}">
+                        <span class="mdi mdi-chart-line pos-left-null"></span>Статистика
+                    </a>
+                </li>
             @endif
         </ul>
     </div>

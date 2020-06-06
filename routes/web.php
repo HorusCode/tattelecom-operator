@@ -22,5 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::view('/statement', 'pages.form-statement')->name('statement');
     Route::view('/problems', 'pages.problem')->name('problem');
     Route::view('/abonents', 'pages.abonents')->name('abonents');
+    Route::view('/statistics', 'pages.statistics')->name('statistics');
 });
 
