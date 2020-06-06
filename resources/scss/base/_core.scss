@@ -51,6 +51,12 @@ a {
 
 // Logo
 
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .logo--image {
   width:180px;
   height: 180px;
@@ -75,6 +81,18 @@ a {
   border-radius: 500px;
 }
 
+.col-form {
+  align-self: center;
+  justify-self: center;
+  padding: $content-padding;
+}
+
+@media (max-width: $breakpoint-phone) {
+  .col-bg {
+    display: none;
+  }
+}
+
 
 //Scroll
 ::-webkit-scrollbar {
@@ -88,6 +106,17 @@ a {
 ::-webkit-scrollbar-thumb {
   background-color: $primary;
   border-radius: 30px;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;  /* auto определяет ширину первой колонки, которая равна самому широкому элементу <dt> (auto можно заменить на fit-content(10em), если необходимо её ограничить) */
+}
+dt {
+  min-width: 0;  /* более привычное поведение при переполнении */
+}
+dd {
+  margin-left: .5em;
 }
 
 

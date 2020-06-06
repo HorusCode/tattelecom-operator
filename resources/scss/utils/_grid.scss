@@ -16,4 +16,21 @@
   width: inherit;
 }
 
+@media screen and (max-width: 776px) {
+  .grid-login {
+    grid-template-columns: auto;
+    grid-template-rows: 5fr 2fr;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .grid-login {
+    grid-template-columns: auto;
+    grid-template-rows: 5fr 2fr;
+    .col-bg {
+      background-size: cover;
+    }
+  }
+}
+
 

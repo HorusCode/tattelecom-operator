@@ -202,7 +202,7 @@
         });
       },
       deleteStatement: function() {
-        axios.delete(`/api/statement/${this.currentStatement}`).then(({data}) => {
+        axios.delete(`/api/statements/${this.currentStatement}`).then(({data}) => {
           this.$buefy.toast.open({
             message: data.message,
             type: data.status ? 'is-success' : 'is-danger',
@@ -221,5 +221,8 @@
     .control.is-expanded {
         width: 100%;
         margin-right: 2rem;
+    }
+    .table td {
+        vertical-align: middle;
     }
 </style>

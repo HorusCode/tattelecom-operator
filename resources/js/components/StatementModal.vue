@@ -1,5 +1,6 @@
 <template>
     <div class="modal-card" style="width: auto">
+        <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
         <header class="modal-card-head">
             <p class="modal-card-title">Назначение сотрудника</p>
         </header>
@@ -19,11 +20,10 @@
                                     @select="option => selectUser(index, option)"
                             >
                                 <template slot-scope="props">
-                                    <div class="media">
-                                        <div class="media-content">
-                                            {{ props.option.fullname }}
-                                        </div>
-                                    </div>
+                                    {{ props.option.fullname }}
+                                    <b-tag :type="props.option.work_count <= 2 ? 'is-success' : 3 >= props.option.work_count && props.option.work_count <= 4 ? 'is-warning' : 'is-danger'">
+                                        {{ props.option.work_count }}
+                                    </b-tag>
                                 </template>
                                 <template slot="empty">Нет результатов</template>
                             </b-autocomplete>
@@ -63,6 +63,7 @@
       return {
         serviceUsers: [],
         isFetching: false,
+        isLoading: false,
         rows: [
           {
             id: undefined,
@@ -107,6 +108,7 @@
           data.forEach((res) => this.serviceUsers.push({
             id: res.id,
             fullname: this.getFullName(res),
+            work_count: res.work_count,
           }));
         }).catch((error) => {
           this.serviceUsers = [];
@@ -144,6 +146,7 @@
         return this.unique(ids);
       },
       sendData: function() {
+        this.isLoading = true;
         axios.post(`/api/works`, {
           ids: this.userServiceIds(),
           current_id: this.currentId,
@@ -154,7 +157,7 @@
             type: 'is-danger',
             message: response.data.message,
           });
-        });
+        }).finally(() => this.isLoading = false);
       },
     },
   };

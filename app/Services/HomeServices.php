@@ -62,7 +62,7 @@ class HomeServices
             }
             $service = [];
             foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
+                $service[] = array_merge($value->serviceUser->toArray(), ['status' => $value->status]);
             }
 
             $work = $datum->first();
@@ -98,7 +98,7 @@ class HomeServices
             }
             $service = [];
             foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
+                $service[] = array_merge($value->serviceUser->toArray(), ['status' => $value->status]);
             }
 
             $work = $datum->first();
@@ -132,7 +132,7 @@ class HomeServices
 
             $service = [];
             foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
+                $service[] = array_merge($value->serviceUser->toArray(), ['status' => $value->status]);
             }
             $work = $datum->first();
             $arr[$arrKey] = [
@@ -167,7 +167,7 @@ class HomeServices
             }
             $service = [];
             foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
+                $service[] = array_merge($value->serviceUser->toArray(), ['status' => $value->status]);
             }
             $work = $datum->first();
             $arr[$arrKey] = [
@@ -200,7 +200,7 @@ class HomeServices
             }
             $service = [];
             foreach ($datum as $j => $value) {
-                $service[] = $value->serviceUser->toArray();
+                $service[] = array_merge($value->serviceUser->toArray(), ['status' => $value->status]);
             }
             $work = $datum->first();
             $arr[$arrKey] = [

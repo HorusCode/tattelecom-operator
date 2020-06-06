@@ -48,9 +48,15 @@
                     <div v-show="data.hasOwnProperty('service_user')" class="mb-3">
                         <h6>Назначены на работу:</h6>
                         <ul class="list m-0">
-                            <li class="list-item" v-for="service in data.service_user">
-                                <span class="is-block">{{getFullName(service)}}</span>
-                                <span class="is-block">Телефон: <strong>{{service.phone}}</strong></span>
+                            <li class="list-item d-flex justify-content-between align-items-center" v-for="service in data.service_user">
+                                <div>
+                                    <span class="is-block">{{getFullName(service)}}</span>
+                                    <span class="is-block">Телефон: <strong>{{service.phone}}</strong></span>
+                                </div>
+                                <div>
+                                    <span v-if="service.status < 2" class="tag" :class="service.status ? 'is-warning' : 'is-danger'">{{  service.status ? 'В процессе' : 'Простаивает' }}</span>
+                                    <span v-else class="tag is-success">Завершён</span>
+                                </div>
                             </li>
                         </ul>
                     </div>

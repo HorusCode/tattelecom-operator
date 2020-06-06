@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\StatementResource;
+use App\Models\Statement;
 use App\Services\StatementService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,10 +14,12 @@ class StatementController extends Controller
 
     private $role;
     protected $stmt;
+    protected $statement;
 
-    public function __construct(StatementService $service)
+    public function __construct(StatementService $service, Statement $statement)
     {
         $this->stmt = $service;
+        $this->statement = $statement;
        // $this->role = Auth::user()->getRole();
     }
 

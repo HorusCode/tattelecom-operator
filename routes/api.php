@@ -16,10 +16,12 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/users/search/service', 'UserController@searchServiceUser');
     Route::get('/users/search/client', 'UserController@searchClient');
     Route::get('/problems/search', 'Api\ProblemController@searchProblem');
+    Route::get('/services/search', 'Api\ServiceController@searchService');
     Route::post('/works', 'WorkController@store');
     Route::post('/works/start', 'WorkController@start');
     Route::post('/works/stop', 'WorkController@stop');
     Route::resource('/service-problems', 'Api\ServiceProblemController')->only(['index', 'store', 'destroy']);
+    Route::resource('/client-service', 'Api\ClientServiceController')->only(['store', 'destroy']);
     Route::resource('/abonents', 'Api\ClientController')->only(['index', 'store', 'destroy']);
     Route::apiResource('/statements', 'Api\StatementController');
     Route::apiResource('/problems', 'Api\ProblemController');

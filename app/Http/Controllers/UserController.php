@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,9 +22,22 @@ class UserController extends Controller
 
     public function searchServiceUser(Request $request)
     {
-        $user = $this->user
-            ->with('employee')
+        $user = DB::table('users')
+            ->select(['users.id','users.firstname','users.lastname','users.patronymic',DB::raw('COUNT(works.id) as work_count')])
             ->whereRaw("CONCAT_WS(' ', `lastname`,`firstname`,`patronymic`) LIKE ?", '%'.$request->text.'%')
+            ->join('employees', function ($join) {
+                $join->on('users.employee_id', '=', 'employees.id')->where('employees.name', '=', 'service');
+            })
+            ->leftJoin('works', function ($join) {
+                $join->on('users.id', '=', 'works.service_user_id')->where('works.status', '<', '2');
+            })
+            ->groupBy('users.id')
+            ->orderBy('work_count', 'asc')
+            ->get();
+
+        /*$user = $this->user
+            ->with('employee')
+
             ->get()
             ->where('employee.name','=', 'service');
         $user = $user->map(function ($item) {
@@ -33,7 +47,7 @@ class UserController extends Controller
                 'lastname' => $item->lastname,
                 'patronymic' => $item->patronymic,
             ];
-        });
+        });*/
         return response()->json($user);
     }
 

@@ -23,7 +23,7 @@ class ClientResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
-            'created_at' => $this->address,
+            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'passport_number' => $this->passport_number,
             'passport_series' => $this->passport_series,

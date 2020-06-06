@@ -45,6 +45,11 @@
                         <span class="mdi mdi-alert-octagon-outline pos-left-null"></span>Все неисправности
                     </a>
                 </li>
+                <li class="vertical-list__item">
+                    <a href="{{ route('abonents') }}" aria-expanded="true" class="{{ $route === 'abonents' ? 'active' : ''}}">
+                        <span class="mdi mdi-account-badge-horizontal-outline pos-left-null"></span>Абоненты
+                    </a>
+                </li>
             @endif
         </ul>
     </div>

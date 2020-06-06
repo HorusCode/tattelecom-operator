@@ -44,7 +44,7 @@ class StatementController extends Controller
         ]);
     }
 
-    public function active() //TODO: Create Resource class
+    public function active()
     {
         $arr = $this->homeServices->getActiveWork($this->role);
 
@@ -57,7 +57,7 @@ class StatementController extends Controller
     }
 
 
-    public function ended() //TODO: Create Resource class
+    public function ended()
     {
         $title = '';
         $arr = [];
