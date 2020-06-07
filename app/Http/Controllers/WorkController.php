@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StatementAdded;
 use App\Http\Requests\IDsRequest;
 use App\Models\Statement;
 use App\Models\User;
 use App\Models\Work;
+use App\Notifications\WorkNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use PhpOffice\PhpWord\TemplateProcessor;
 
 class WorkController extends Controller
@@ -43,8 +45,10 @@ class WorkController extends Controller
         $fullNameClient = $user->lastname . ' ' . $user->firstname . ' ' . $user->patronymic;
         $filesArr = [];
         if ($created) {
+            event(new StatementAdded($data));
             foreach ($request->ids as $id) {
                 $service = $this->user->find($id);
+                $service->notify(new WorkNotification('У вас появилась новая работа!'));
                 $date = Carbon::now();
                 $_doc = new TemplateProcessor(public_path('docx\template.docx'));
                 $_doc->setValue('created_at', $date);
@@ -64,7 +68,6 @@ class WorkController extends Controller
                 ];
                 $_doc->saveAs(public_path('files/' . $filename));
             }
-
         }
 
         return response()->json(['status' => $created, 'files' => $filesArr]);
@@ -75,14 +78,18 @@ class WorkController extends Controller
     {
         $statement = $this->statement->find($request->statement_id);
         $statement->update(['status' => false]);
-        $status = $this->work->find($request->work_id)->update(['status' => 1]);
+        $work = $this->work->find($request->work_id);
+        $work->operatorUser->notify(new WorkNotification($work->serviceUser->getFullName() . ' приступил к работе!'));
+        $status = $work->update(['status' => 1]);
 
         return response()->json(['status' => $status]);
     }
 
     public function stop(Request $request)
     {
-        $status = $this->work->find($request->work_id)->update(['status' => 2]);
+        $work = $this->work->find($request->work_id);
+        $work->operatorUser->notify(new WorkNotification($work->serviceUser->getFullName() . ' закончил выполнение работы!'));
+        $status = $work->update(['status' => 2]);
         return response()->json(['status' => $status]);
     }
 }

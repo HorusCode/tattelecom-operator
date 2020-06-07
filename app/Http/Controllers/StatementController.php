@@ -4,6 +4,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\StatementAdded;
+use App\Notifications\NewWorkCreated;
 use App\Services\HomeServices;
 use Auth;
 use Illuminate\Contracts\Support\Renderable;
@@ -36,6 +38,7 @@ class StatementController extends Controller
     {
 
         $data = $this->homeServices->getStatement($this->role);
+        event(new StatementAdded(['kek' => 'lol']));
         return view('pages.statement')->with([
             'data' => json_encode($data),
             'title' => $this->role == 'service' ? 'Новые заявления' : 'Новые работы',

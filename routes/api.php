@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/users/search/client', 'UserController@searchClient');
     Route::get('/problems/search', 'Api\ProblemController@searchProblem');
     Route::get('/services/search', 'Api\ServiceController@searchService');
+    Route::get('/statistics', 'Api\StatisticController@statistic');
     Route::post('/works', 'WorkController@store');
     Route::post('/works/start', 'WorkController@start');
     Route::post('/works/stop', 'WorkController@stop');

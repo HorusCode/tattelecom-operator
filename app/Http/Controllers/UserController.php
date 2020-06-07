@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\User;
+use App\Notifications\NewWorkCreated;
+use Auth;
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {

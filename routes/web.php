@@ -25,3 +25,4 @@ Route::middleware('auth')->group(function () {
     Route::view('/statistics', 'pages.statistics')->name('statistics');
 });
 
+

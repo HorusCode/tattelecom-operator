@@ -5,6 +5,7 @@
         <div class="tile is-parent">
             <div class="tile is-child box">
                 <p class="title is-5">Заявления по месяцам</p>
+                <month-statement-statistic></month-statement-statistic>
             </div>
         </div>
         <div class="tile is-parent">

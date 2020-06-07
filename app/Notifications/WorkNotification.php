@@ -2,23 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Models\Client;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class NewWorkCreated extends Notification
+class WorkNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
 
+    private $message;
+
+    public function __construct($message)
+    {
+        $this->message = $message;
     }
 
     /**
@@ -29,7 +27,7 @@ class NewWorkCreated extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['broadcast'];
     }
 
     /**
@@ -50,12 +48,13 @@ class NewWorkCreated extends Notification
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return BroadcastMessage
      */
-    public function toArray($notifiable)
+    public function toBroadcast($notifiable)
     {
-        return [
-            //
-        ];
+        return new BroadcastMessage([
+            'message' => $this->message
+        ]);
     }
+
 }

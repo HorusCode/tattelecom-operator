@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\StatementCreated;
 use App\Http\Resources\StatementResource;
 use App\Models\Statement;
 use App\Services\StatementService;

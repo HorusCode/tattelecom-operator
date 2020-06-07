@@ -1727,6 +1727,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'MonthStatementStatistic',
@@ -1735,14 +1754,32 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      data: []
+      data: {},
+      type: 'month'
     };
   },
   mounted: function mounted() {
     this.listenData();
+    this.loadData();
   },
   methods: {
-    listenData: function listenData() {}
+    listenData: function listenData() {},
+    loadData: function loadData() {
+      var _this = this;
+
+      axios.get('/api/statistics', {
+        params: {
+          data: 'statements',
+          type: this.type
+        }
+      }).then(function (_ref) {
+        var data = _ref.data;
+        _this.data = data;
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
+        console.log(response);
+      });
+    }
   }
 });
 
@@ -2718,6 +2755,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+console.log(userId);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     StatementModal: _StatementModal__WEBPACK_IMPORTED_MODULE_5__["default"],
@@ -2742,8 +2781,20 @@ __webpack_require__.r(__webpack_exports__);
       type: String
     }
   },
+  mounted: function mounted() {
+    var _this = this;
+
+    Echo["private"]('App.Models.User.' + userId).notification(function (notification) {
+      _this.$buefy.notification.open({
+        duration: 3000,
+        message: notification.message,
+        position: 'is-bottom-right',
+        type: 'is-info',
+        hasIcon: true
+      });
+    });
+  },
   data: function data() {
-    console.log(JSON.parse(this.data));
     return {
       json: JSON.parse(this.data),
       isAddServiceManagerModal: false,
@@ -2756,7 +2807,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     showNotification: function showNotification(data) {
-      var _this = this;
+      var _this2 = this;
 
       this.isAddServiceManagerModal = false;
       this.$buefy.toast.open({
@@ -2766,15 +2817,15 @@ __webpack_require__.r(__webpack_exports__);
       this.isNotification = data.status;
       this.docsUrl = data.files;
       this.json = _.filter(this.json, function (item) {
-        return item.id !== _this.currentStatement;
+        return item.id !== _this2.currentStatement;
       });
 
       _.delay(function () {
-        _this.currentStatement = undefined;
+        _this2.currentStatement = undefined;
       }, 300, 'later');
     },
     startWork: function startWork(arr) {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.post("/api/works/start", {
         work_id: arr.id,
@@ -2782,27 +2833,8 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (_ref) {
         var data = _ref.data;
 
-        _this2.$buefy.toast.open({
-          message: data.status ? 'Выполнение заявления начато!' : 'Произошла ошибка',
-          type: data.status ? 'is-success' : 'is-danger'
-        });
-
-        _this2.json = _.filter(_this2.json, function (item) {
-          return item.id !== arr.id;
-        });
-      });
-    },
-    stopWork: function stopWork(arr) {
-      var _this3 = this;
-
-      axios.post("/api/works/stop", {
-        work_id: arr.id,
-        statement_id: arr.statement_id
-      }).then(function (_ref2) {
-        var data = _ref2.data;
-
         _this3.$buefy.toast.open({
-          message: data.status ? 'Выполнение заявления завершено!' : 'Произошла ошибка',
+          message: data.status ? 'Выполнение заявления начато!' : 'Произошла ошибка',
           type: data.status ? 'is-success' : 'is-danger'
         });
 
@@ -2811,8 +2843,27 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    confirmDelete: function confirmDelete() {
+    stopWork: function stopWork(arr) {
       var _this4 = this;
+
+      axios.post("/api/works/stop", {
+        work_id: arr.id,
+        statement_id: arr.statement_id
+      }).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this4.$buefy.toast.open({
+          message: data.status ? 'Выполнение заявления завершено!' : 'Произошла ошибка',
+          type: data.status ? 'is-success' : 'is-danger'
+        });
+
+        _this4.json = _.filter(_this4.json, function (item) {
+          return item.id !== arr.id;
+        });
+      });
+    },
+    confirmDelete: function confirmDelete() {
+      var _this5 = this;
 
       this.$buefy.dialog.confirm({
         title: 'Удалить заявление',
@@ -2822,25 +2873,25 @@ __webpack_require__.r(__webpack_exports__);
         type: 'is-danger',
         hasIcon: true,
         onConfirm: function onConfirm() {
-          return _this4.deleteStatement();
+          return _this5.deleteStatement();
         }
       });
     },
     deleteStatement: function deleteStatement() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios["delete"]("/api/statements/".concat(this.currentStatement)).then(function (_ref3) {
         var data = _ref3.data;
 
-        _this5.$buefy.toast.open({
+        _this6.$buefy.toast.open({
           message: data.message,
           type: data.status ? 'is-success' : 'is-danger'
         });
 
-        _this5.json = _.filter(_this5.json, function (item) {
-          return item.id !== _this5.currentStatement;
+        _this6.json = _.filter(_this6.json, function (item) {
+          return item.id !== _this6.currentStatement;
         });
-        _this5.currentStatement = null;
+        _this6.currentStatement = null;
       });
     }
   }
@@ -63500,9 +63551,65 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("bar-chart", {
-    attrs: { "chart-data": _vm.data, options: { responsive: true } }
-  })
+  return _c(
+    "section",
+    [
+      _c("b-field", [
+        _c("p", { staticClass: "control" }, [
+          _c(
+            "button",
+            {
+              staticClass: "button",
+              on: {
+                click: function($event) {
+                  ;(_vm.type = "day"), _vm.loadData()
+                }
+              }
+            },
+            [_vm._v("\n                День\n            ")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "control" }, [
+          _c(
+            "button",
+            {
+              staticClass: "button",
+              on: {
+                click: function($event) {
+                  ;(_vm.type = "month"), _vm.loadData()
+                }
+              }
+            },
+            [_vm._v("\n               Месяц\n            ")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "control" }, [
+          _c(
+            "button",
+            {
+              staticClass: "button",
+              on: {
+                click: function($event) {
+                  ;(_vm.type = "year"), _vm.loadData()
+                }
+              }
+            },
+            [_vm._v("\n                Год\n            ")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("bar-chart", {
+        attrs: {
+          "chart-data": _vm.data,
+          options: { responsive: true, maintainAspectRatio: true }
+        }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -65291,10 +65398,11 @@ if (localStorage.key('token')) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'pusher',
-  key: "",
+  key: "12314",
   cluster: "mt1",
-  wsHost: 'http://my-diplom',
-  wsPort: 6001
+  wsHost: window.location.hostname,
+  wsPort: 6001,
+  forceTLS: false
 });
 
 /***/ }),

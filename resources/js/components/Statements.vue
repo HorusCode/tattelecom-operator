@@ -110,6 +110,8 @@
   import {search, fullName} from '../mixins';
   import StatementModal from './StatementModal';
 
+  const userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+    console.log(userId);
   export default {
     components: {StatementModal, EmptyData, UserList},
     mixins: [search, fullName],
@@ -130,8 +132,18 @@
         type: String,
       },
     },
+    mounted() {
+      Echo.private('App.Models.User.' + userId).notification((notification) => {
+        this.$buefy.notification.open({
+          duration: 3000,
+          message: notification.message,
+          position: 'is-bottom-right',
+          type: 'is-info',
+          hasIcon: true
+        });
+      });
+    },
     data() {
-      console.log(JSON.parse(this.data));
       return {
         json: JSON.parse(this.data),
         isAddServiceManagerModal: false,
