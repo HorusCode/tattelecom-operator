@@ -28,7 +28,7 @@ class StatisticService
 
     public function getStatistic()
     {
-        $function = $this->data . 'Statistic';
+        $function = Str::camel($this->data) . 'Statistic';
         if (method_exists(__CLASS__, $function)) {
             $data = $this->$function();
         } else {
@@ -45,11 +45,29 @@ class StatisticService
         return $this->formattingStatements($data);
     }
 
+    private function statementsStatusStatistic()
+    {
+        $repo = new StatementRepository();
+        $data = $repo->getByStatusCount();
+        return $this->formattingStatementsStatus($data);
+    }
+
+    private function formattingStatementsStatus($arr)
+    {
+        return [
+            'labels' => ['Новые', 'Назначенные', 'Начатые', 'Завершенные'],
+            'datasets' => [[
+                'backgroundColor' => ['#FF6384', '#36A2EB', '#0fb6b2', '#1438b8'],
+                'data' => $arr
+            ]]
+        ];
+    }
+
     private function formattingStatements($collection)
     {
         $type = $this->dateCarbonType();
 
-        if($this->type != 'day') {
+        if ($this->type != 'day') {
             $labels = $this->{$type}();
             $data = [];
         }

@@ -36,13 +36,9 @@
       };
     },
     mounted() {
-      this.listenData();
       this.loadData();
     },
     methods: {
-      listenData: function() {
-
-      },
       loadData: function() {
         axios.get('/api/statistics', {
           params: {

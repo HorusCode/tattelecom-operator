@@ -10,7 +10,8 @@
         </div>
         <div class="tile is-parent">
             <div class="tile is-child box">
-                <p class="title is-5">Закрытые/в процессе/новые заявления</p>
+                <p class="title is-5">Состояния заявлений</p>
+                <status-statement-statistic></status-statement-statistic>
             </div>
         </div>
     </div>

@@ -6,6 +6,8 @@ namespace App\Repositories;
 
 use App\Models\Statement;
 use Carbon\Carbon;
+use DB;
+use function foo\func;
 
 
 class StatementRepository
@@ -47,6 +49,25 @@ class StatementRepository
                 return Carbon::parse($d->created_at)->format(substr($date, 0, 1));
             });
 
+    }
+
+
+    public function getByStatusCount()
+    {
+        $data[] = $this->statement->whereStatus(1)->count();
+        $data[] = DB::table('works')->where('works.status', '=', 0)
+            ->join('statements', function($join) {
+                $join->on('works.statement_id','=','statements.id')->where('statements.status', '=', 0);
+            })->count('works.id');
+        $data[] = DB::table('works')->where('works.status', '=', 1)
+            ->join('statements', function($join) {
+                $join->on('works.statement_id','=','statements.id')->where('statements.status', '=', 0);
+            })->count('works.id');
+        $data[] = DB::table('works')->where('works.status', '=', 2)
+            ->join('statements', function($join) {
+                $join->on('works.statement_id','=','statements.id')->where('statements.status', '=', 0);
+            })->count('works.id');
+       return $data;
     }
 
 
